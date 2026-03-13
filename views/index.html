@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PokéDraft</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="bg-mesh min-h-screen text-slate-100 font-sans selection:bg-blue-500 selection:text-white">
+  
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 max-w-6xl animate-fade-in relative z-10">
+    <header class="text-center mb-10 animate-float">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 drop-shadow-md pb-2">PokéDraft</h1>
+      <p class="text-blue-200/70 mt-3 text-sm sm:text-base font-medium uppercase tracking-widest">Global Pokedex Selection API</p>
+    </header>
+
+    <!-- Controls Container (Glassmorphism) -->
+    <div class="glass rounded-2xl p-6 sm:p-8 mb-10 relative overflow-hidden group">
+      <!-- Decorative blurry glow -->
+      <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 pointer-events-none transition-opacity duration-500 group-hover:opacity-40"></div>
+      
+      <div class="flex flex-col md:flex-row gap-5 relative z-10">
+        <!-- Search Bar -->
+        <div class="flex-1">
+          <label for="search" class="block text-xs font-semibold text-blue-200 uppercase tracking-wider mb-2 ml-1">Buscar Pokémon</label>
+          <div class="relative">
+            <input type="text" id="search" placeholder="Ej: Pikachu..." class="w-full px-5 py-3 sm:py-4 glass-input rounded-xl text-sm sm:text-base pr-10">
+            <svg class="absolute right-3 max-sm:top-4 md:top-3 h-5 w-5 text-blue-300/60" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- User Name Input -->
+        <div class="flex-1">
+          <label for="userName" class="block text-xs font-semibold text-blue-200 uppercase tracking-wider mb-2 ml-1">Tu Nombre de Entrenador</label>
+          <input type="text" id="userName" placeholder="Ash Ketchum" class="w-full px-5 py-3 sm:py-4 glass-input rounded-xl text-sm sm:text-base">
+        </div>
+      </div>
+      
+      <!-- Selected Items Area inside controls for compactness on mobile -->
+      <div id="selectedList" class="mt-8 pt-6 border-t border-white/10 hidden">
+        <div class="flex justify-between items-end mb-4">
+          <h2 class="text-sm sm:text-base font-medium text-blue-100 flex items-center gap-2">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            Tu Equipo (<span id="selectedCount" class="font-bold text-white">0</span>/5)
+          </h2>
+          <!-- Submit Button -->
+          <button id="submitBtn" class="glass-button text-white font-bold py-2.5 px-6 sm:px-8 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-sm transition-all flex items-center gap-2" disabled>
+            <span>Guardar</span>
+            <svg class="w-4 h-4 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          </button>
+        </div>
+        <ul id="selectedItems" class="flex flex-wrap gap-2">
+          <!-- Selected items will be inserted here dynamically -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Pokémon List Grid -->
+    <div id="pokemonList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 pl-2 pr-2 gap-4 sm:gap-5 pb-16">
+      <!-- Pokémon cards will be inserted here -->
+    </div>
+    
+  </div>
+
+  <script src="/script.js"></script>
+</body>
+</html>
