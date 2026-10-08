@@ -1,0 +1,194 @@
+openapi: 3.0.0
+info:
+  title: PokeDraft League Manager API
+  description: API RESTful en TypeScript para administración de ligas PokeDraft, salas de draft en vivo, cálculo de coberturas y estadísticas MVP.
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Servidor Base API
+
+paths:
+  /auth/register:
+    post:
+      summary: Registro de nuevo usuario
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  example: coach@pokedraft.com
+                password:
+                  type: string
+                  example: password123
+                role:
+                  type: string
+                  enum: [ADMIN, COACH]
+                  default: COACH
+      responses:
+        201:
+          description: Usuario registrado exitosamente
+
+  /auth/login:
+    post:
+      summary: Inicio de sesión
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  example: coach@pokedraft.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        200:
+          description: Login exitoso con Token JWT
+
+  /leagues:
+    get:
+      summary: Listar todas las ligas
+      tags: [Leagues]
+      responses:
+        200:
+          description: Lista de ligas
+    post:
+      summary: Crear nueva liga
+      tags: [Leagues]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  example: "Liga Nacional PokeDraft Season 1"
+                draft_mode:
+                  type: string
+                  enum: [POINTS, TIERS]
+                  default: POINTS
+                total_budget:
+                  type: integer
+                  default: 100
+                roster_size:
+                  type: integer
+                  default: 10
+                time_per_pick_seconds:
+                  type: integer
+                  default: 120
+      responses:
+        201:
+          description: Liga creada
+
+  /pokemons:
+    get:
+      summary: Buscar y filtrar catálogo de Pokémon
+      tags: [Pokemon]
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+          description: Nombre o número en Pokédex
+        - in: query
+          name: type
+          schema:
+            type: string
+          description: Tipo elemental (ej. dragon, water, fire)
+        - in: query
+          name: minCost
+          schema:
+            type: integer
+        - in: query
+          name: maxCost
+          schema:
+            type: integer
+        - in: query
+          name: leagueId
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Lista de Pokémon filtrados con costes y stats
+
+  /draft/league/{leagueId}/state:
+    get:
+      summary: Obtener estado en tiempo real del draft (turno activo, picks, entrenadores)
+      tags: [Draft]
+      parameters:
+        - in: path
+          name: leagueId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Estado del tablero de draft
+
+  /draft/league/{leagueId}/pick:
+    post:
+      summary: Realizar una selección de Draft (Snake Pick)
+      tags: [Draft]
+      parameters:
+        - in: path
+          name: leagueId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [coach_id, pokemon_id]
+              properties:
+                coach_id:
+                  type: integer
+                pokemon_id:
+                  type: integer
+      responses:
+        200:
+          description: Pick registrado exitosamente
+
+  /leaderboard/league/{leagueId}/standings:
+    get:
+      summary: Obtener tabla de clasificación general
+      tags: [Leaderboard]
+      parameters:
+        - in: path
+          name: leagueId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Tabla de posiciones (PJ, V, D, Dif, Pts)
+
+  /leaderboard/league/{leagueId}/mvp:
+    get:
+      summary: Obtener ranking MVP de Pokémon de la liga
+      tags: [Leaderboard]
+      parameters:
+        - in: path
+          name: leagueId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Ranking de Pokémon más letales con ratio K/D
