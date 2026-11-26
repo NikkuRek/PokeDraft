@@ -1,3 +1,16 @@
+import { api } from '../services/api.js';
+import { escapeHtml } from '../utils/format.js';
+import { icon, IconName } from '../utils/icons.js';
+
+const NAV_ITEMS: Array<{ id: string; label: string; iconName: IconName }> = [
+  { id: 'lobby', label: 'Ligas', iconName: 'leagues' },
+  { id: 'draft', label: 'Sala de Draft', iconName: 'draft' },
+  { id: 'pokedex', label: 'Pokédex', iconName: 'book' },
+  { id: 'rosters', label: 'Plantillas', iconName: 'rosters' },
+  { id: 'matches', label: 'Batallas', iconName: 'matches' },
+  { id: 'leaderboard', label: 'Ranking', iconName: 'leaderboard' }
+];
+
 export const renderNavbar = (
   currentView: string,
   leagues: Array<{ id: number; name: string }>,
@@ -9,43 +22,71 @@ export const renderNavbar = (
   const header = document.getElementById('main-header');
   if (!header) return;
 
-  header.innerHTML = `
-    <div class="brand" id="brand-logo">
-      <div class="brand-icon">⚔️</div>
-      <span>PokeDraft <span style="color: var(--accent-primary); font-size: 0.8em;">Manager</span></span>
-    </div>
+  const isAuthenticated = Boolean(api.getToken());
 
-    <nav>
-      <ul class="nav-links">
-        <li class="nav-item ${currentView === 'lobby' ? 'active' : ''}" data-view="lobby">🏠 Ligas</li>
-        <li class="nav-item ${currentView === 'draft' ? 'active' : ''}" data-view="draft">🎯 Sala de Draft</li>
-        <li class="nav-item ${currentView === 'rosters' ? 'active' : ''}" data-view="rosters">🛡️ Plantillas & Coberturas</li>
-        <li class="nav-item ${currentView === 'matches' ? 'active' : ''}" data-view="matches">⚔️ Calendario / Batallas</li>
-        <li class="nav-item ${currentView === 'leaderboard' ? 'active' : ''}" data-view="leaderboard">🏆 Clasificación & MVP</li>
-      </ul>
+  header.innerHTML = `
+    <button type="button" class="brand-trigger" id="brand-logo" aria-label="Ir al inicio de Ligas">
+      <span class="dex-optic-cluster" aria-hidden="true">
+        <span class="dex-optic-lens"></span>
+        <span class="dex-led-bank">
+          <span class="dex-led dex-led--red"></span>
+          <span class="dex-led dex-led--gold"></span>
+          <span class="dex-led dex-led--green"></span>
+        </span>
+      </span>
+      <span class="brand-wordmark">
+        <span class="brand-title">PokeDraft</span>
+        <span class="brand-sub">Consola Dex</span>
+      </span>
+    </button>
+
+    <nav class="nav-dock" aria-label="Navegación principal">
+      ${NAV_ITEMS.map((item) => {
+        const isActive = currentView === item.id;
+        return `
+          <button
+            type="button"
+            class="nav-btn ${isActive ? 'active' : ''}"
+            data-view="${item.id}"
+            ${isActive ? 'aria-current="page"' : ''}
+          >
+            ${icon(item.iconName)}
+            <span>${item.label}</span>
+          </button>
+        `;
+      }).join('')}
     </nav>
 
     <div class="header-actions">
-      <select id="league-selector" class="select-input" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+      <select id="league-selector" class="select-input header-select" aria-label="Seleccionar liga activa">
         <option value="">-- Seleccionar Liga --</option>
-        ${leagues.map((l) => `<option value="${l.id}" ${l.id === selectedLeagueId ? 'selected' : ''}>${l.name}</option>`).join('')}
+        ${leagues
+          .map(
+            (l) =>
+              `<option value="${l.id}" ${l.id === selectedLeagueId ? 'selected' : ''}>${escapeHtml(l.name)}</option>`
+          )
+          .join('')}
       </select>
-      <button id="btn-auth" class="btn btn-secondary btn-sm">👤 Cuenta</button>
+      <button type="button" id="btn-auth" class="btn btn-secondary btn-sm">
+        <span class="auth-led ${isAuthenticated ? 'is-online' : ''}" aria-hidden="true"></span>
+        ${icon('user')}
+        <span>${isAuthenticated ? 'Sesión activa' : 'Cuenta'}</span>
+      </button>
     </div>
   `;
 
-  // Attach event listeners
   document.getElementById('brand-logo')?.addEventListener('click', () => onNavigate('lobby'));
 
-  header.querySelectorAll('.nav-item').forEach((item) => {
-    item.addEventListener('click', () => {
-      const view = item.getAttribute('data-view');
+  header.querySelectorAll('.nav-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const view = btn.getAttribute('data-view');
       if (view) onNavigate(view);
     });
   });
 
-  document.getElementById('league-selector')?.addEventListener('change', (e: any) => {
-    const val = parseInt(e.target.value, 10);
+  document.getElementById('league-selector')?.addEventListener('change', (e: Event) => {
+    const target = e.target as HTMLSelectElement;
+    const val = parseInt(target.value, 10);
     if (!isNaN(val)) {
       onSelectLeague(val);
     }

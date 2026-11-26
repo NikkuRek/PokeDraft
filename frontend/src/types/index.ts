@@ -124,3 +124,38 @@ export interface IMvpPokemon {
   kd_ratio: number;
   appearances: number;
 }
+
+export interface IPokeApiAbility {
+  name: string;
+  is_hidden: boolean;
+}
+
+export interface IPokeApiDetail {
+  dex_number: number;
+  slug: string;
+  name: string;
+  type1: string;
+  type2: string | null;
+  base_hp: number;
+  base_atk: number;
+  base_def: number;
+  base_spa: number;
+  base_spd: number;
+  base_spe: number;
+  base_bst: number;
+  sprite_url: string;
+  sprite_shiny_url: string | null;
+  sprite_home_url: string | null;
+  sprite_animated_url: string | null;
+  height_m: number;
+  weight_kg: number;
+  abilities: IPokeApiAbility[];
+  cry_url: string | null;
+  species_url: string | null;
+}
+
+export interface IPokeApiSpecies {
+  genus_es: string;
+  flavor_text_es: string;
+  generation: string;
+}

@@ -105,6 +105,13 @@ class ApiService {
     return this.request(`/pokemons${qs ? `?${qs}` : ''}`);
   }
 
+  async syncPokemonFromPokeApi(nameOrId: string | number, defaultCost: number = 10): Promise<IPokemon> {
+    return this.request('/pokemons/sync-pokeapi', {
+      method: 'POST',
+      body: JSON.stringify({ nameOrId, defaultCost })
+    });
+  }
+
   // Draft
   async startDraft(leagueId: number): Promise<ILeague> {
     return this.request(`/draft/league/${leagueId}/start`, { method: 'POST' });

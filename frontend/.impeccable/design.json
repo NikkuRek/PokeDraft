@@ -1,0 +1,493 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-26T04:17:08Z",
+  "title": "Design System: PokeDraft Manager",
+  "extensions": {
+    "colorMeta": {
+      "pokedex-crimson": {
+        "role": "primary",
+        "displayName": "Pokédex Crimson",
+        "canonical": "oklch(59.9% 0.221 23.8)",
+        "tonalRamp": [
+          "oklch(15% 0.093 23.8)",
+          "oklch(26% 0.143 23.8)",
+          "oklch(38% 0.19 23.8)",
+          "oklch(50% 0.221 23.8)",
+          "oklch(62% 0.212 23.8)",
+          "oklch(74% 0.168 23.8)",
+          "oklch(85% 0.106 23.8)",
+          "oklch(95% 0.044 23.8)"
+        ]
+      },
+      "pokedex-crimson-hover": {
+        "role": "primary",
+        "displayName": "Pokédex Crimson Hover",
+        "canonical": "oklch(65.7% 0.229 22.7)",
+        "tonalRamp": [
+          "oklch(15% 0.096 22.7)",
+          "oklch(26% 0.149 22.7)",
+          "oklch(38% 0.197 22.7)",
+          "oklch(50% 0.229 22.7)",
+          "oklch(62% 0.22 22.7)",
+          "oklch(74% 0.174 22.7)",
+          "oklch(85% 0.11 22.7)",
+          "oklch(95% 0.046 22.7)"
+        ]
+      },
+      "pokedex-crimson-deep": {
+        "role": "primary",
+        "displayName": "Pokédex Crimson Deep",
+        "canonical": "oklch(44.9% 0.17 24.2)",
+        "tonalRamp": [
+          "oklch(15% 0.071 24.2)",
+          "oklch(26% 0.11 24.2)",
+          "oklch(38% 0.146 24.2)",
+          "oklch(50% 0.17 24.2)",
+          "oklch(62% 0.163 24.2)",
+          "oklch(74% 0.129 24.2)",
+          "oklch(85% 0.082 24.2)",
+          "oklch(95% 0.034 24.2)"
+        ]
+      },
+      "optic-cyan": {
+        "role": "secondary",
+        "displayName": "Optic Cyan",
+        "canonical": "oklch(79.7% 0.134 211.5)",
+        "tonalRamp": [
+          "oklch(15% 0.056 211.5)",
+          "oklch(26% 0.087 211.5)",
+          "oklch(38% 0.115 211.5)",
+          "oklch(50% 0.134 211.5)",
+          "oklch(62% 0.129 211.5)",
+          "oklch(74% 0.102 211.5)",
+          "oklch(85% 0.064 211.5)",
+          "oklch(95% 0.027 211.5)"
+        ]
+      },
+      "competitive-gold": {
+        "role": "tertiary",
+        "displayName": "Competitive Gold",
+        "canonical": "oklch(81.8% 0.157 82.3)",
+        "tonalRamp": [
+          "oklch(15% 0.066 82.3)",
+          "oklch(26% 0.102 82.3)",
+          "oklch(38% 0.135 82.3)",
+          "oklch(50% 0.157 82.3)",
+          "oklch(62% 0.15 82.3)",
+          "oklch(74% 0.119 82.3)",
+          "oklch(85% 0.075 82.3)",
+          "oklch(95% 0.031 82.3)"
+        ]
+      },
+      "emerald-active": {
+        "role": "tertiary",
+        "displayName": "Emerald Active",
+        "canonical": "oklch(69.6% 0.149 162.5)",
+        "tonalRamp": [
+          "oklch(15% 0.063 162.5)",
+          "oklch(26% 0.097 162.5)",
+          "oklch(38% 0.128 162.5)",
+          "oklch(50% 0.149 162.5)",
+          "oklch(62% 0.143 162.5)",
+          "oklch(74% 0.113 162.5)",
+          "oklch(85% 0.072 162.5)",
+          "oklch(95% 0.03 162.5)"
+        ]
+      },
+      "amber-mid": {
+        "role": "tertiary",
+        "displayName": "Amber Mid",
+        "canonical": "oklch(76.9% 0.165 70.1)",
+        "tonalRamp": [
+          "oklch(15% 0.069 70.1)",
+          "oklch(26% 0.107 70.1)",
+          "oklch(38% 0.142 70.1)",
+          "oklch(50% 0.165 70.1)",
+          "oklch(62% 0.158 70.1)",
+          "oklch(74% 0.125 70.1)",
+          "oklch(85% 0.079 70.1)",
+          "oklch(95% 0.033 70.1)"
+        ]
+      },
+      "danger-red": {
+        "role": "tertiary",
+        "displayName": "Danger Red",
+        "canonical": "oklch(63.7% 0.208 25.3)",
+        "tonalRamp": [
+          "oklch(15% 0.087 25.3)",
+          "oklch(26% 0.135 25.3)",
+          "oklch(38% 0.179 25.3)",
+          "oklch(50% 0.208 25.3)",
+          "oklch(62% 0.2 25.3)",
+          "oklch(74% 0.158 25.3)",
+          "oklch(85% 0.1 25.3)",
+          "oklch(95% 0.042 25.3)"
+        ]
+      },
+      "obsidian-chassis": {
+        "role": "neutral",
+        "displayName": "Obsidian Chassis",
+        "canonical": "oklch(15.5% 0.009 274.3)",
+        "tonalRamp": [
+          "oklch(15% 0.004 274.3)",
+          "oklch(26% 0.006 274.3)",
+          "oklch(38% 0.007 274.3)",
+          "oklch(50% 0.009 274.3)",
+          "oklch(62% 0.008 274.3)",
+          "oklch(74% 0.007 274.3)",
+          "oklch(85% 0.004 274.3)",
+          "oklch(95% 0.002 274.3)"
+        ]
+      },
+      "obsidian-surface": {
+        "role": "neutral",
+        "displayName": "Obsidian Surface",
+        "canonical": "oklch(19.6% 0.015 266.8)",
+        "tonalRamp": [
+          "oklch(15% 0.006 266.8)",
+          "oklch(26% 0.01 266.8)",
+          "oklch(38% 0.013 266.8)",
+          "oklch(50% 0.015 266.8)",
+          "oklch(62% 0.014 266.8)",
+          "oklch(74% 0.011 266.8)",
+          "oklch(85% 0.007 266.8)",
+          "oklch(95% 0.003 266.8)"
+        ]
+      },
+      "obsidian-surface-elevated": {
+        "role": "neutral",
+        "displayName": "Obsidian Surface Elevated",
+        "canonical": "oklch(22.2% 0.019 266.1)",
+        "tonalRamp": [
+          "oklch(15% 0.008 266.1)",
+          "oklch(26% 0.012 266.1)",
+          "oklch(38% 0.016 266.1)",
+          "oklch(50% 0.019 266.1)",
+          "oklch(62% 0.018 266.1)",
+          "oklch(74% 0.014 266.1)",
+          "oklch(85% 0.009 266.1)",
+          "oklch(95% 0.004 266.1)"
+        ]
+      },
+      "obsidian-surface-high": {
+        "role": "neutral",
+        "displayName": "Obsidian Surface High",
+        "canonical": "oklch(26.0% 0.026 265.4)",
+        "tonalRamp": [
+          "oklch(15% 0.011 265.4)",
+          "oklch(26% 0.017 265.4)",
+          "oklch(38% 0.022 265.4)",
+          "oklch(50% 0.026 265.4)",
+          "oklch(62% 0.025 265.4)",
+          "oklch(74% 0.02 265.4)",
+          "oklch(85% 0.013 265.4)",
+          "oklch(95% 0.005 265.4)"
+        ]
+      },
+      "obsidian-well": {
+        "role": "neutral",
+        "displayName": "Obsidian Well",
+        "canonical": "oklch(14.1% 0.009 273.2)",
+        "tonalRamp": [
+          "oklch(15% 0.004 273.2)",
+          "oklch(26% 0.006 273.2)",
+          "oklch(38% 0.008 273.2)",
+          "oklch(50% 0.009 273.2)",
+          "oklch(62% 0.009 273.2)",
+          "oklch(74% 0.007 273.2)",
+          "oklch(85% 0.004 273.2)",
+          "oklch(95% 0.002 273.2)"
+        ]
+      },
+      "obsidian-well-deep": {
+        "role": "neutral",
+        "displayName": "Obsidian Well Deep",
+        "canonical": "oklch(12.2% 0.009 268.1)",
+        "tonalRamp": [
+          "oklch(15% 0.004 268.1)",
+          "oklch(26% 0.006 268.1)",
+          "oklch(38% 0.007 268.1)",
+          "oklch(50% 0.009 268.1)",
+          "oklch(62% 0.008 268.1)",
+          "oklch(74% 0.006 268.1)",
+          "oklch(85% 0.004 268.1)",
+          "oklch(95% 0.002 268.1)"
+        ]
+      },
+      "ink-primary": {
+        "role": "neutral",
+        "displayName": "Primary Ink",
+        "canonical": "oklch(97.0% 0.006 264.5)",
+        "tonalRamp": [
+          "oklch(15% 0.002 264.5)",
+          "oklch(26% 0.004 264.5)",
+          "oklch(38% 0.005 264.5)",
+          "oklch(50% 0.006 264.5)",
+          "oklch(62% 0.006 264.5)",
+          "oklch(74% 0.004 264.5)",
+          "oklch(85% 0.003 264.5)",
+          "oklch(95% 0.001 264.5)"
+        ]
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Secondary Ink",
+        "canonical": "oklch(74.8% 0.027 261.1)",
+        "tonalRamp": [
+          "oklch(15% 0.011 261.1)",
+          "oklch(26% 0.018 261.1)",
+          "oklch(38% 0.023 261.1)",
+          "oklch(50% 0.027 261.1)",
+          "oklch(62% 0.026 261.1)",
+          "oklch(74% 0.02 261.1)",
+          "oklch(85% 0.013 261.1)",
+          "oklch(95% 0.005 261.1)"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "oklch(60.2% 0.035 263.4)",
+        "tonalRamp": [
+          "oklch(15% 0.015 263.4)",
+          "oklch(26% 0.022 263.4)",
+          "oklch(38% 0.03 263.4)",
+          "oklch(50% 0.035 263.4)",
+          "oklch(62% 0.033 263.4)",
+          "oklch(74% 0.026 263.4)",
+          "oklch(85% 0.017 263.4)",
+          "oklch(95% 0.007 263.4)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "View section titles and active turn coach headlines."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "League card headings, modal titles, and round/week dividers."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Header wordmark, Pokémon card names, match coach names, and uppercase panel headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "UI controls, subtitles (max 68ch), form inputs, and table rows."
+      },
+      "label": {
+        "displayName": "Label / Telemetry",
+        "purpose": "National Dex numbers, point budgets, elemental type badges, status pills, and metric captions."
+      }
+    },
+    "shadows": [
+      {
+        "name": "neo-raised-sm",
+        "value": "-3px -3px 7px rgba(255, 255, 255, 0.035), 4px 5px 12px rgba(0, 0, 0, 0.82)",
+        "purpose": "Tactile buttons, filter dock, Pokémon cards, active nav pill, and optic lens."
+      },
+      {
+        "name": "neo-raised-md",
+        "value": "-5px -5px 12px rgba(255, 255, 255, 0.038), 7px 9px 20px rgba(0, 0, 0, 0.88)",
+        "purpose": "Primary cards, turn command deck, toast alerts, and hovered Pokémon cards."
+      },
+      {
+        "name": "neo-raised-lg",
+        "value": "-7px -7px 18px rgba(255, 255, 255, 0.042), 10px 14px 28px rgba(0, 0, 0, 0.92)",
+        "purpose": "Hovered league cards and modal overlay dialogs."
+      },
+      {
+        "name": "neo-inset-sm",
+        "value": "inset 3px 3px 7px rgba(0, 0, 0, 0.92), inset -2px -2px 5px rgba(255, 255, 255, 0.032)",
+        "purpose": "Recessed navigation dock, inputs, selects, telemetry wells, coach rows, and drafted cards."
+      },
+      {
+        "name": "neo-inset-md",
+        "value": "inset 4px 4px 10px rgba(0, 0, 0, 0.95), inset -3px -3px 8px rgba(255, 255, 255, 0.035)",
+        "purpose": "Circular 92px Poké-Slot sprite wells."
+      },
+      {
+        "name": "neo-press",
+        "value": "inset 3px 3px 8px rgba(0, 0, 0, 0.9), inset -2px -2px 6px rgba(255, 255, 255, 0.04)",
+        "purpose": "Active pressed button depression state."
+      },
+      {
+        "name": "dex-crimson-glow",
+        "value": "0 6px 16px rgba(0, 0, 0, 0.72)",
+        "purpose": "Deep contact grounding beneath primary crimson action buttons."
+      },
+      {
+        "name": "dex-cyan-glow",
+        "value": "0 6px 16px rgba(0, 0, 0, 0.65)",
+        "purpose": "Ambient grounding beneath hovered available Pokémon cards."
+      },
+      {
+        "name": "header-drop",
+        "value": "0 8px 24px rgba(0, 0, 0, 0.78)",
+        "purpose": "Elevation shadow beneath the sticky Pokédex header shell."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-tactile",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Snappy hardware deceleration curve for button presses, card lifts, and toasts."
+      },
+      {
+        "name": "dur-fast",
+        "value": "140ms",
+        "purpose": "Immediate micro-interactions (button press, nav hover, sprite scale, input focus)."
+      },
+      {
+        "name": "dur-base",
+        "value": "210ms",
+        "purpose": "Panel border and shadow transitions on hover."
+      },
+      {
+        "name": "skeleton-sweep",
+        "value": "1.3s ease-in-out infinite",
+        "purpose": "Horizontal shimmer across loading skeleton cards."
+      },
+      {
+        "name": "toast-enter",
+        "value": "220ms cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Toast slide-up entrance from bottom-right viewport corner."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "Collapse animation and transition durations under prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "lg",
+        "value": "1120px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "sm",
+        "value": "540px"
+      },
+      {
+        "name": "xs",
+        "value": "480px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary crimson keycap button for draft picks, league creation, and turn commitments.",
+      "html": "<button type=\"button\" class=\"ds-btn-primary\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.85\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polygon points=\"13 2 4 14 11 14 10 22 20 10 13 10 13 2\" /></svg><span>Iniciar Draft Snake</span></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.62rem 1.2rem; font-family: var(--font-body, 'Barlow', system-ui, sans-serif); font-size: 0.88rem; font-weight: 700; letter-spacing: 0.01em; border-radius: var(--radius-sm, 10px); border: 1px solid rgba(255, 130, 140, 0.35); background: linear-gradient(145deg, var(--dex-crimson, #e62938) 0%, var(--dex-crimson-deep, #9e1420) 100%); color: #ffffff; box-shadow: var(--neo-raised-sm, -3px -3px 7px rgba(255,255,255,0.035), 4px 5px 12px rgba(0,0,0,0.82)), var(--dex-crimson-glow, 0 6px 16px rgba(0,0,0,0.72)); cursor: pointer; transition: transform var(--dur-fast, 140ms) var(--ease-tactile, cubic-bezier(0.22,1,0.36,1)), box-shadow var(--dur-fast, 140ms) var(--ease-tactile, cubic-bezier(0.22,1,0.36,1)), background var(--dur-fast, 140ms) var(--ease-tactile, cubic-bezier(0.22,1,0.36,1)); } .ds-btn-primary:hover:not(:disabled) { background: linear-gradient(145deg, var(--dex-crimson-hover, #ff3b4a) 0%, #b31927 100%); box-shadow: var(--neo-raised-md, -5px -5px 12px rgba(255,255,255,0.038), 7px 9px 20px rgba(0,0,0,0.88)); transform: translateY(-1px); } .ds-btn-primary:active:not(:disabled) { transform: translateY(1px); box-shadow: var(--neo-press, inset 3px 3px 8px rgba(0,0,0,0.9), inset -2px -2px 6px rgba(255,255,255,0.04)); } .ds-btn-primary:focus-visible { outline: 2px solid var(--dex-cyan, #22d3ee); outline-offset: 2px; } .ds-btn-primary:disabled { background: var(--bg-well, #08090d); color: var(--ink-muted, #768196); border-color: rgba(255, 255, 255, 0.04); box-shadow: var(--neo-inset-sm, inset 3px 3px 7px rgba(0,0,0,0.92)); cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Tactile Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Elevated obsidian button for secondary operations like Undo Pick, Export Showdown, and Coach registration.",
+      "html": "<button type=\"button\" class=\"ds-btn-secondary\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.85\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9 14L4 9l5-5\" /><path d=\"M4 9h10a6 6 0 1 1 0 12h-3\" /></svg><span>Deshacer Pick</span></button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.62rem 1.2rem; font-family: var(--font-body, 'Barlow', system-ui, sans-serif); font-size: 0.88rem; font-weight: 700; letter-spacing: 0.01em; border-radius: var(--radius-sm, 10px); border: 1px solid var(--neo-border-strong, rgba(255, 255, 255, 0.13)); background: linear-gradient(145deg, #1b202b 0%, #12151d 100%); color: var(--ink-primary, #f3f5f9); box-shadow: var(--neo-raised-sm, -3px -3px 7px rgba(255,255,255,0.035), 4px 5px 12px rgba(0,0,0,0.82)); cursor: pointer; transition: transform var(--dur-fast, 140ms) var(--ease-tactile, cubic-bezier(0.22,1,0.36,1)), background var(--dur-fast, 140ms) var(--ease-tactile, cubic-bezier(0.22,1,0.36,1)), border-color var(--dur-fast, 140ms) var(--ease-tactile, cubic-bezier(0.22,1,0.36,1)); } .ds-btn-secondary:hover:not(:disabled) { background: linear-gradient(145deg, #212736 0%, #161a24 100%); border-color: rgba(255, 255, 255, 0.22); } .ds-btn-secondary:active:not(:disabled) { transform: translateY(1px); box-shadow: var(--neo-press, inset 3px 3px 8px rgba(0,0,0,0.9), inset -2px -2px 6px rgba(255,255,255,0.04)); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--dex-cyan, #22d3ee); outline-offset: 2px; }"
+    },
+    {
+      "name": "Concave Search Field",
+      "kind": "input",
+      "refersTo": "input-well",
+      "description": "Recessed concave Pokédex search well with cyan optic focus ring.",
+      "html": "<div class=\"ds-search-wrap\"><span class=\"ds-search-icon\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.85\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" /><line x1=\"20\" y1=\"20\" x2=\"16.2\" y2=\"16.2\" /></svg></span><input type=\"text\" class=\"ds-input-search\" placeholder=\"Buscar por nombre o # Pokédex...\" aria-label=\"Buscar Pokémon\" /></div>",
+      "css": ".ds-search-wrap { position: relative; min-width: 240px; width: 100%; } .ds-search-icon { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--ink-muted, #768196); pointer-events: none; display: inline-flex; } .ds-input-search { width: 100%; background: var(--bg-well, #08090d); border: 1px solid rgba(255, 255, 255, 0.07); box-shadow: var(--neo-inset-sm, inset 3px 3px 7px rgba(0,0,0,0.92), inset -2px -2px 5px rgba(255,255,255,0.032)); color: var(--ink-primary, #f3f5f9); padding: 0.62rem 0.9rem 0.62rem 2.45rem; border-radius: var(--radius-sm, 10px); font-family: var(--font-body, 'Barlow', system-ui, sans-serif); font-size: 0.9rem; outline: none; transition: border-color var(--dur-fast, 140ms) var(--ease-tactile, cubic-bezier(0.22,1,0.36,1)), box-shadow var(--dur-fast, 140ms) var(--ease-tactile, cubic-bezier(0.22,1,0.36,1)); } .ds-input-search::placeholder { color: var(--ink-muted, #768196); } .ds-input-search:hover { border-color: rgba(255, 255, 255, 0.13); } .ds-input-search:focus, .ds-input-search:focus-visible { border-color: var(--dex-cyan, #22d3ee); box-shadow: var(--neo-inset-sm, inset 3px 3px 7px rgba(0,0,0,0.92)), 0 0 0 2px rgba(34, 211, 238, 0.22); }"
+    },
+    {
+      "name": "Pokédex Nav Dock",
+      "kind": "nav",
+      "refersTo": "nav-dock",
+      "description": "Recessed pill navigation dock with raised crimson-edged active view pill and optic header cluster.",
+      "html": "<nav class=\"ds-nav-dock\" aria-label=\"Navegación principal\"><button type=\"button\" class=\"ds-nav-btn\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.85\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 4h12v5a6 6 0 0 1-12 0V4z\" /><path d=\"M6 6H3v2a3 3 0 0 0 3 3\" /><path d=\"M18 6h3v2a3 3 0 0 1-3 3\" /><path d=\"M12 15v5\" /><path d=\"M8 20h8\" /></svg><span>Ligas</span></button><button type=\"button\" class=\"ds-nav-btn is-active\" aria-current=\"page\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.85\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"8\" /><circle cx=\"12\" cy=\"12\" r=\"3\" /><line x1=\"12\" y1=\"2\" x2=\"12\" y2=\"6\" /><line x1=\"12\" y1=\"18\" x2=\"12\" y2=\"22\" /><line x1=\"2\" y1=\"12\" x2=\"6\" y2=\"12\" /><line x1=\"18\" y1=\"12\" x2=\"22\" y2=\"12\" /></svg><span>Sala de Draft</span></button></nav>",
+      "css": ".ds-nav-dock { background: var(--bg-well, #08090d); box-shadow: var(--neo-inset-sm, inset 3px 3px 7px rgba(0,0,0,0.92), inset -2px -2px 5px rgba(255,255,255,0.032)); border: 1px solid rgba(255, 255, 255, 0.045); border-radius: var(--radius-pill, 9999px); padding: 0.3rem; display: inline-flex; align-items: center; gap: 0.25rem; } .ds-nav-btn { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.48rem 0.9rem; border-radius: var(--radius-pill, 9999px); border: 1px solid transparent; background: transparent; color: var(--ink-secondary, #a4aebf); font-family: var(--font-body, 'Barlow', system-ui, sans-serif); font-size: 0.86rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: color 140ms cubic-bezier(0.22,1,0.36,1), background 140ms cubic-bezier(0.22,1,0.36,1), border-color 140ms cubic-bezier(0.22,1,0.36,1); } .ds-nav-btn:hover { color: var(--ink-primary, #f3f5f9); background: rgba(255, 255, 255, 0.04); } .ds-nav-btn:focus-visible { outline: 2px solid var(--dex-cyan, #22d3ee); outline-offset: 2px; } .ds-nav-btn.is-active { color: #ffffff; background: linear-gradient(145deg, #1e2330, #13161f); border-color: var(--dex-crimson-border, rgba(230, 41, 56, 0.52)); box-shadow: var(--neo-raised-sm, -3px -3px 7px rgba(255,255,255,0.035), 4px 5px 12px rgba(0,0,0,0.82)); } .ds-nav-btn.is-active svg { color: var(--dex-crimson, #e62938); }"
+    },
+    {
+      "name": "Elemental Type & Status Chips",
+      "kind": "chip",
+      "refersTo": "type-badge",
+      "description": "High-contrast obsidian elemental type chips and league phase status pills with LED dots.",
+      "html": "<div class=\"ds-chip-row\"><span class=\"ds-type-badge ds-type-fire\" tabindex=\"0\"><span class=\"ds-type-dot\"></span><span>Fuego</span></span><span class=\"ds-type-badge ds-type-dragon\" tabindex=\"0\"><span class=\"ds-type-dot\"></span><span>Dragón</span></span><span class=\"ds-status-pill ds-status-drafting\" tabindex=\"0\"><span class=\"ds-status-dot\"></span><span>Draft en Vivo</span></span><span class=\"ds-status-pill ds-status-active\" tabindex=\"0\"><span class=\"ds-status-dot\"></span><span>En Curso</span></span></div>",
+      "css": ".ds-chip-row { display: inline-flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; } .ds-type-badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.55rem; border-radius: var(--radius-xs, 6px); font-family: var(--font-display, 'Chakra Petch', sans-serif); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-primary, #f3f5f9); border: 1px solid rgba(255,255,255,0.14); box-shadow: inset 1px 1px 3px rgba(0,0,0,0.8); transition: transform 140ms cubic-bezier(0.22,1,0.36,1), border-color 140ms cubic-bezier(0.22,1,0.36,1); } .ds-type-badge:hover, .ds-status-pill:hover { transform: translateY(-1px); } .ds-type-badge:active, .ds-status-pill:active { transform: translateY(0); } .ds-type-badge:focus-visible, .ds-status-pill:focus-visible { outline: 2px solid var(--dex-cyan, #22d3ee); outline-offset: 2px; } .ds-type-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; } .ds-type-fire { border-color: rgba(239, 68, 68, 0.6); background: rgba(239, 68, 68, 0.14); } .ds-type-fire .ds-type-dot { background: #ff5a4f; } .ds-type-dragon { border-color: rgba(129, 140, 248, 0.62); background: rgba(129, 140, 248, 0.15); } .ds-type-dragon .ds-type-dot { background: #818cf8; } .ds-status-pill { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.65rem; border-radius: var(--radius-pill, 9999px); font-family: var(--font-mono, 'JetBrains Mono', monospace); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.065); transition: transform 140ms cubic-bezier(0.22,1,0.36,1); } .ds-status-dot { width: 6px; height: 6px; border-radius: 50%; } .ds-status-drafting { color: #ff8e97; border-color: var(--dex-crimson-border, rgba(230,41,56,0.52)); background: var(--dex-crimson-tint, rgba(230,41,56,0.12)); } .ds-status-drafting .ds-status-dot { background: var(--dex-crimson, #e62938); } .ds-status-active { color: #6ee7b7; border-color: var(--dex-emerald-border, rgba(16,185,129,0.42)); background: var(--dex-emerald-tint, rgba(16,185,129,0.12)); } .ds-status-active .ds-status-dot { background: var(--dex-emerald, #10b981); }"
+    },
+    {
+      "name": "Poké-Slot Draft Card",
+      "kind": "card",
+      "refersTo": "card-surface",
+      "description": "Signature draft catalog card with Dex # header, gold cost pill, circular concave Poké-Slot well, telemetry strip, and inspect/draft actions.",
+      "html": "<article class=\"ds-pokemon-card\" tabindex=\"0\"><div class=\"ds-pokemon-top\"><span class=\"ds-dex-num\">#0445</span><span class=\"ds-cost-badge\">18 pts</span></div><div class=\"ds-poke-well\"><svg viewBox=\"0 0 24 24\" width=\"42\" height=\"42\" fill=\"none\" stroke=\"#22d3ee\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\" /><line x1=\"3\" y1=\"12\" x2=\"9\" y2=\"12\" /><line x1=\"15\" y1=\"12\" x2=\"21\" y2=\"12\" /><circle cx=\"12\" cy=\"12\" r=\"3\" /></svg></div><div class=\"ds-poke-name\">Garchomp</div><div class=\"ds-telemetry-strip\"><span>BST <strong>600</strong></span><span>SPE <strong>102</strong></span></div><div class=\"ds-card-actions\"><button type=\"button\" class=\"ds-btn-icon\" aria-label=\"Inspeccionar\"><svg viewBox=\"0 0 24 24\" width=\"15\" height=\"15\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.85\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\" /><line x1=\"12\" y1=\"16\" x2=\"12\" y2=\"12\" /><line x1=\"12\" y1=\"8\" x2=\"12.01\" y2=\"8\" /></svg></button><button type=\"button\" class=\"ds-btn-pick\">Draftear</button></div></article>",
+      "css": ".ds-pokemon-card { width: 205px; background: linear-gradient(155deg, #171b25 0%, #10131a 100%); border: 1px solid var(--neo-border, rgba(255,255,255,0.065)); border-radius: var(--radius-md, 14px); padding: 0.95rem; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: var(--neo-raised-sm, -3px -3px 7px rgba(255,255,255,0.035), 4px 5px 12px rgba(0,0,0,0.82)); transition: transform 140ms cubic-bezier(0.22,1,0.36,1), border-color 140ms cubic-bezier(0.22,1,0.36,1), box-shadow 140ms cubic-bezier(0.22,1,0.36,1); } .ds-pokemon-card:hover { transform: translateY(-3px); border-color: var(--dex-cyan-border, rgba(34,211,238,0.45)); box-shadow: var(--neo-raised-md, -5px -5px 12px rgba(255,255,255,0.038), 7px 9px 20px rgba(0,0,0,0.88)), var(--dex-cyan-glow, 0 6px 16px rgba(0,0,0,0.65)); } .ds-pokemon-card:focus-visible { outline: 2px solid var(--dex-cyan, #22d3ee); outline-offset: 2px; } .ds-pokemon-top { width: 100%; display: flex; align-items: center; justify-content: space-between; } .ds-dex-num { font-family: var(--font-mono, monospace); font-size: 0.74rem; font-weight: 700; color: var(--ink-muted, #768196); } .ds-cost-badge { padding: 0.18rem 0.55rem; background: var(--bg-well, #08090d); border: 1px solid var(--dex-gold-border, rgba(245,184,46,0.42)); box-shadow: var(--neo-inset-sm, inset 3px 3px 7px rgba(0,0,0,0.92)); color: var(--dex-gold, #f5b82e); font-family: var(--font-mono, monospace); font-weight: 700; font-size: 0.74rem; border-radius: 9999px; } .ds-poke-well { width: 92px; height: 92px; border-radius: 50%; background: radial-gradient(circle at 50% 45%, #121622 0%, #07080b 75%); box-shadow: var(--neo-inset-md, inset 4px 4px 10px rgba(0,0,0,0.95), inset -3px -3px 8px rgba(255,255,255,0.035)); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin: 0.6rem 0; } .ds-poke-name { font-family: var(--font-display, 'Chakra Petch', sans-serif); font-size: 1rem; font-weight: 700; color: var(--ink-primary, #f3f5f9); margin-bottom: 0.5rem; } .ds-telemetry-strip { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; padding: 0.38rem 0.5rem; margin-bottom: 0.7rem; background: var(--bg-well, #08090d); border-radius: 6px; box-shadow: var(--neo-inset-sm, inset 3px 3px 7px rgba(0,0,0,0.92)); font-family: var(--font-mono, monospace); font-size: 0.7rem; color: var(--ink-secondary, #a4aebf); } .ds-telemetry-strip strong { color: var(--ink-primary, #f3f5f9); } .ds-card-actions { width: 100%; display: flex; gap: 0.4rem; } .ds-btn-icon { width: 34px; height: 34px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.13); background: linear-gradient(145deg, #1b202b 0%, #12151d 100%); color: #f3f5f9; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; } .ds-btn-icon:hover { border-color: rgba(255,255,255,0.22); } .ds-btn-pick { flex: 1; border-radius: 10px; border: 1px solid rgba(255,130,140,0.35); background: linear-gradient(145deg, #e62938 0%, #9e1420 100%); color: #ffffff; font-family: var(--font-body, sans-serif); font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: transform 140ms cubic-bezier(0.22,1,0.36,1); } .ds-btn-pick:hover { background: linear-gradient(145deg, #ff3b4a 0%, #b31927 100%); } .ds-btn-pick:active { transform: translateY(1px); } .ds-btn-icon:focus-visible, .ds-btn-pick:focus-visible { outline: 2px solid #22d3ee; outline-offset: 2px; }"
+    },
+    {
+      "name": "Active Turn Command Deck",
+      "kind": "custom",
+      "refersTo": "card-surface",
+      "description": "Crimson-railed live Snake Draft command deck displaying active coach, round/pick/budget telemetry wells, and upcoming Snake queue.",
+      "html": "<section class=\"ds-turn-deck\" tabindex=\"0\"><div class=\"ds-turn-top\"><div class=\"ds-turn-id\"><span class=\"ds-turn-beacon\"></span><h2 class=\"ds-turn-title\">Turno Activo: Red <span class=\"ds-turn-sub\">(Kanto Apex)</span></h2></div><div class=\"ds-telemetry-row\"><div class=\"ds-well\"><span>Ronda</span><strong>R1</strong></div><div class=\"ds-well\"><span>Pick</span><strong>#1 (1 Global)</strong></div><div class=\"ds-well is-gold\"><span>Presupuesto</span><strong>100 pts</strong></div></div></div><div class=\"ds-snake-strip\"><span class=\"ds-snake-label\">Orden Snake</span><div class=\"ds-snake-node is-current\" tabindex=\"0\"><span class=\"ds-snake-code\">R1·P1</span><span>Red</span></div><div class=\"ds-snake-node\" tabindex=\"0\"><span class=\"ds-snake-code\">R1·P2</span><span>Blue</span></div></div></section>",
+      "css": ".ds-turn-deck { background: linear-gradient(135deg, rgba(230, 41, 56, 0.13) 0%, #141720 45%, #10131a 100%); border: 1px solid var(--dex-crimson-border, rgba(230, 41, 56, 0.52)); border-radius: var(--radius-lg, 20px); padding: 1.15rem 1.45rem; box-shadow: var(--neo-raised-md, -5px -5px 12px rgba(255,255,255,0.038), 7px 9px 20px rgba(0,0,0,0.88)); display: flex; flex-direction: column; gap: 1rem; max-width: 640px; transition: border-color 210ms cubic-bezier(0.22,1,0.36,1), box-shadow 210ms cubic-bezier(0.22,1,0.36,1); } .ds-turn-deck:hover { border-color: rgba(230, 41, 56, 0.72); } .ds-turn-deck:focus-visible, .ds-snake-node:focus-visible { outline: 2px solid var(--dex-cyan, #22d3ee); outline-offset: 2px; } .ds-turn-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; } .ds-turn-id { display: flex; align-items: center; gap: 0.75rem; } .ds-turn-beacon { width: 11px; height: 11px; border-radius: 50%; background: var(--dex-crimson, #e62938); border: 2px solid rgba(255,255,255,0.25); flex-shrink: 0; } .ds-turn-title { margin: 0; font-family: var(--font-display, 'Chakra Petch', sans-serif); font-size: 1.2rem; font-weight: 700; color: #ffffff; } .ds-turn-sub { color: var(--ink-secondary, #a4aebf); font-weight: 500; font-size: 0.9rem; } .ds-telemetry-row { display: flex; gap: 0.6rem; flex-wrap: wrap; } .ds-well { padding: 0.45rem 0.75rem; background: var(--bg-well, #08090d); border: 1px solid rgba(255,255,255,0.045); border-radius: 10px; box-shadow: var(--neo-inset-sm, inset 3px 3px 7px rgba(0,0,0,0.92)); display: flex; flex-direction: column; min-width: 82px; } .ds-well span { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted, #768196); } .ds-well strong { font-family: var(--font-mono, monospace); font-size: 0.9rem; font-weight: 700; color: var(--ink-primary, #f3f5f9); } .ds-well.is-gold strong { color: var(--dex-gold, #f5b82e); } .ds-snake-strip { display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem; background: var(--bg-well, #08090d); border-radius: 10px; box-shadow: var(--neo-inset-sm, inset 3px 3px 7px rgba(0,0,0,0.92)); border: 1px solid rgba(255,255,255,0.045); overflow-x: auto; } .ds-snake-label { font-family: var(--font-mono, monospace); font-size: 0.68rem; font-weight: 700; color: var(--ink-muted, #768196); text-transform: uppercase; letter-spacing: 0.08em; padding: 0 0.4rem; } .ds-snake-node { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.65rem; border-radius: 6px; background: var(--bg-surface, #12151c); border: 1px solid rgba(255,255,255,0.065); font-size: 0.78rem; color: var(--ink-primary, #f3f5f9); transition: border-color 140ms cubic-bezier(0.22,1,0.36,1); } .ds-snake-node:hover { border-color: rgba(255,255,255,0.2); } .ds-snake-node.is-current { background: var(--dex-crimson-tint, rgba(230,41,56,0.12)); border-color: var(--dex-crimson-border, rgba(230,41,56,0.52)); color: #ffffff; } .ds-snake-code { font-family: var(--font-mono, monospace); font-size: 0.7rem; font-weight: 700; color: var(--dex-cyan, #22d3ee); } .ds-snake-node.is-current .ds-snake-code { color: #ff8e97; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Pro-Controller Tactile Deck",
+    "overview": "PokeDraft Manager is built as a matte-obsidian competitive Pokédex hardware console engineered for live Snake Draft sessions and weekly league telemetry. Rather than mimicking flat spreadsheets or translucent SaaS dashboards, every panel behaves like machined polymer and anodized metal: convex control plates rise softly out of a deep carbon chassis (`#0b0c10`) while interactive inputs, navigation docks, score wells, and circular Poké-Slots recess cleanly below the deck plane.\n\nThe interface balances high-density competitive data—national Pokédex numbers, 18 elemental type badges, 6-stat bars, Snake turn queues, and K/D differentials—with disciplined chromatic restraint. Matte obsidian surfaces stay quiet so that Pokédex Crimson (`#e62938`), Optic Cyan (`#22d3ee`), and Competitive Gold (`#f5b82e`) carry unmistakable operational meaning without visual noise.",
+    "keyCharacteristics": [
+      "Matte carbon-obsidian chassis (`#0b0c10`) paired with sculpted dark neomorphic convex plates and recessed concave wells.",
+      "Strict hardware signal separation: crimson for primary actions and active turn control, cyan for optic lens and scanner/focus telemetry, gold for budgets and top rank.",
+      "Geometric display headings (`Chakra Petch`), crisp humanist UI copy (`Barlow`), and tabular monospace telemetry (`JetBrains Mono`).",
+      "Custom 24px stroke-based SVG iconography throughout all navigation, status, and action chrome with zero UI emojis.",
+      "Pixel-honest sprite presentation inside circular recessed wells, supporting animated pixel sprites alongside static fallback artwork."
+    ],
+    "rules": [
+      {
+        "name": "The Hardware Signal Rule",
+        "body": "Crimson (`#e62938`) owns turn authority and primary commitments; Cyan (`#22d3ee`) owns optical focus, inspection, and immunities; Gold (`#f5b82e`) owns points and rank #1. Never swap these roles or flood ambient backgrounds with saturated fills.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tinted Ink Fallback Rule",
+        "body": "All 18 elemental type badges, status pills, and stat indicators use translucent `12%–16%` tinted wells with `42%–62%` border opacity and light foreground inks (`#f3f5f9` or high-luminance pastel tints) rather than saturated solid blocks, preserving contrast across dark obsidian surfaces.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Telemetry Rule",
+        "body": "Every numeric readout that compares quantities—Dex numbers, point budgets, BST/SPE strips, stat values, scores, standings differentials, and K/D ratios—must use `JetBrains Mono` with `font-variant-numeric: tabular-nums` so live updates never cause horizontal layout jitter.",
+        "section": "typography"
+      },
+      {
+        "name": "The Two-Plane Workspace Rule",
+        "body": "Keep primary catalogs and tactical sidebars aligned on a `1440px` maximum-width deck with `24px` (`1.5rem`) column separation on desktop, collapsing the sidebar strictly below `1120px` so live drafters keep budgets and pick history simultaneously visible on standard monitors.",
+        "section": "layout"
+      },
+      {
+        "name": "The Polarity Contrast Rule",
+        "body": "Raised action surfaces (cards, primary/secondary buttons, modals) use convex gradients plus `neo-raised-*` shadows; data-receiving or inactive surfaces (inputs, docks, wells, drafted cards) sink inward using `#08090d` fills plus `neo-inset-*` shadows. Never apply raised shadows to text inputs or inset shadows to clickable primary CTAs.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** preserve the convex-plate vs. concave-well neomorphic contrast (`#12151c` raised cards vs. `#08090d` recessed wells).",
+      "**Do** enforce `JetBrains Mono` with `tabular-nums` on every Dex number, cost, budget, stat, score, and K/D metric.",
+      "**Do** use the custom 24px `1.85` stroke SVG icon set for all UI indicators and keep all copy, labels, and empty states in Spanish.",
+      "**Do** apply `image-rendering: pixelated` to animated sprites while gracefully falling back to smooth static artwork on load failure.",
+      "**Do** highlight keyboard focus with `#22d3ee` (`2px` outline or `0 0 0 2px rgba(34, 211, 238, 0.22)` ring) and honor `prefers-reduced-motion: reduce`."
+    ],
+    "donts": [
+      "**Don't** introduce emojis in navigation, buttons, badges, or headings—use crisp SVG icons exclusively.",
+      "**Don't** use translucent white-glassmorphism SaaS panels or light-mode backgrounds; surfaces stay matte carbon-obsidian.",
+      "**Don't** apply Pokédex Crimson (`#e62938`) to passive informational tags or non-primary buttons; reserve it for turn authority and primary actions.",
+      "**Don't** place raised shadows on text inputs or inset shadows on primary action buttons.",
+      "**Don't** strip the `1px` micro-bevel hairline (`rgba(255, 255, 255, 0.065)`) from dark neomorphic surfaces, as dark-on-dark depth collapses without specular edge definition."
+    ]
+  }
+}

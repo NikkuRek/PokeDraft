@@ -16,21 +16,30 @@ export interface IPokemonFilters {
 
 export class PokemonService {
   public static async getAll(filters: IPokemonFilters = {}): Promise<{ count: number; rows: any[] }> {
-    const { query, type, minCost, maxCost, tier, leagueId, limit = 50, offset = 0 } = filters;
+    const { query, type, minCost, maxCost, tier, leagueId, limit = 200, offset = 0 } = filters;
     const where: any = {};
+    const andConditions: any[] = [];
 
     if (query) {
-      where[Op.or] = [
-        { name: { [Op.like]: `%${query}%` } },
-        { dex_number: isNaN(Number(query)) ? -1 : Number(query) }
-      ];
+      andConditions.push({
+        [Op.or]: [
+          { name: { [Op.like]: `%${query}%` } },
+          { dex_number: isNaN(Number(query)) ? -1 : Number(query) }
+        ]
+      });
     }
 
     if (type) {
-      where[Op.or] = [
-        { type1: type.toLowerCase() },
-        { type2: type.toLowerCase() }
-      ];
+      andConditions.push({
+        [Op.or]: [
+          { type1: type.toLowerCase() },
+          { type2: type.toLowerCase() }
+        ]
+      });
+    }
+
+    if (andConditions.length > 0) {
+      where[Op.and] = andConditions;
     }
 
     if (minCost !== undefined || maxCost !== undefined) {
@@ -56,7 +65,7 @@ export class PokemonService {
     const { count, rows } = await Pokemon.findAndCountAll({
       where,
       include,
-      limit: Math.min(limit, 200),
+      limit: Math.min(limit, 500),
       offset,
       order: [['dex_number', 'ASC']]
     });

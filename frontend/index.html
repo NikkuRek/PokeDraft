@@ -3,23 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PokeDraft Manager - Plataforma de Ligas Competitivas</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#0B0C10" />
+    <title>PokeDraft Manager — Consola Competitiva de Draft</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B0C10'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23E62938' stroke-width='2.5'/%3E%3Cline x1='6' y1='16' x2='12' y2='16' stroke='%23E62938' stroke-width='2.5'/%3E%3Cline x1='20' y1='16' x2='26' y2='16' stroke='%23E62938' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%2322D3EE'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
   <body>
-    <div id="app">
-      <!-- Navbar / Top Header -->
+    <div id="app" class="app-shell">
       <header id="main-header" class="header"></header>
-
-      <!-- Main Content Container -->
       <main id="main-container" class="container"></main>
-
-      <!-- Global Modal Container -->
-      <div id="modal-container" class="modal-backdrop hidden"></div>
-      <div id="toast-container" class="toast-container"></div>
+      <div id="modal-container" class="modal-backdrop hidden" role="dialog" aria-modal="true"></div>
+      <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

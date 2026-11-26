@@ -1,5 +1,34 @@
 import { IPokemon } from '../interfaces/index.js';
 
+const POKEAPI_FORM_ALIASES: Record<string, string> = {
+  'ogerpon-wellspring': 'ogerpon-wellspring-mask',
+  'ogerpon-hearthflame': 'ogerpon-hearthflame-mask',
+  'ogerpon-cornerstone': 'ogerpon-cornerstone-mask',
+  urshifu: 'urshifu-single-strike',
+  landorus: 'landorus-incarnate',
+  tornadus: 'tornadus-incarnate',
+  thundurus: 'thundurus-incarnate',
+  enamorus: 'enamorus-incarnate',
+  mimikyu: 'mimikyu-disguised',
+  aegislash: 'aegislash-shield',
+  toxtricity: 'toxtricity-amped',
+  palafin: 'palafin-zero',
+  indeedee: 'indeedee-male',
+  basculegion: 'basculegion-male',
+  maushold: 'maushold-family-of-four',
+  dudunsparce: 'dudunsparce-two-segment',
+  giratina: 'giratina-altered',
+  shaymin: 'shaymin-land',
+  keldeo: 'keldeo-ordinary',
+  meloetta: 'meloetta-aria',
+  lycanroc: 'lycanroc-midday',
+  darmanitan: 'darmanitan-standard',
+  wishiwashi: 'wishiwashi-solo',
+  eiscue: 'eiscue-ice',
+  morpeko: 'morpeko-full-belly',
+  deoxys: 'deoxys-normal'
+};
+
 export class PokeApiService {
   private static readonly BASE_URL = 'https://pokeapi.co/api/v2/pokemon';
 
@@ -16,11 +45,12 @@ export class PokeApiService {
   ): Promise<Partial<IPokemon> | null> {
     const cleanQuery = String(nameOrId).toLowerCase().trim().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
     if (!cleanQuery) return null;
+    const resolvedSlug = POKEAPI_FORM_ALIASES[cleanQuery] || cleanQuery;
 
     try {
-      const response = await fetch(`${this.BASE_URL}/${cleanQuery}`);
+      const response = await fetch(`${this.BASE_URL}/${resolvedSlug}`);
       if (!response.ok) {
-        console.warn(`[PokeApiService] No se encontró el Pokémon: "${cleanQuery}" en PokeAPI`);
+        console.warn(`[PokeApiService] No se encontró el Pokémon: "${resolvedSlug}" en PokeAPI`);
         return null;
       }
 
