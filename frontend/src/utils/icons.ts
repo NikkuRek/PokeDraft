@@ -26,7 +26,17 @@ export type IconName =
   | 'volume'
   | 'download'
   | 'chevronLeft'
-  | 'chevronRight';
+  | 'chevronRight'
+  | 'pause'
+  | 'play'
+  | 'ban'
+  | 'list'
+  | 'arrowUp'
+  | 'arrowDown'
+  | 'trash'
+  | 'fastForward'
+  | 'crown'
+  | 'shield';
 
 const SVG_PATHS: Record<IconName, string> = {
   pokeball:
@@ -82,7 +92,17 @@ const SVG_PATHS: Record<IconName, string> = {
   download:
     '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />',
   chevronLeft: '<polyline points="15 18 9 12 15 6" />',
-  chevronRight: '<polyline points="9 18 15 12 9 6" />'
+  chevronRight: '<polyline points="9 18 15 12 9 6" />',
+  pause: '<rect x="6" y="4" width="4" height="16" rx="1" /><rect x="14" y="4" width="4" height="16" rx="1" />',
+  play: '<polygon points="6 4 20 12 6 20 6 4" />',
+  ban: '<circle cx="12" cy="12" r="9" /><line x1="5.6" y1="5.6" x2="18.4" y2="18.4" />',
+  list: '<line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />',
+  arrowUp: '<polyline points="18 15 12 9 6 15" />',
+  arrowDown: '<polyline points="6 9 12 15 18 9" />',
+  trash: '<polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />',
+  fastForward: '<polygon points="13 19 22 12 13 5 13 19" /><polygon points="2 19 11 12 2 5 2 19" />',
+  crown: '<path d="M3 18h18l-1.5-10-4.5 4-3-6-3 6-4.5-4L3 18z" />',
+  shield: '<path d="M12 3l7 3v5c0 4.8-3 8.6-7 10-4-1.4-7-5.2-7-10V6l7-3z" />'
 };
 
 export function icon(name: IconName, className = 'icon-svg'): string {

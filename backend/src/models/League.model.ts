@@ -1,8 +1,28 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/sequelize.config.js';
-import { ILeague, DraftMode, LeagueStatus } from '../interfaces/index.js';
+import { ILeague, DraftMode, LeagueStatus, TimeoutAction } from '../interfaces/index.js';
 
-interface LeagueCreationAttributes extends Optional<ILeague, 'id' | 'status' | 'current_pick_turn' | 'created_at' | 'updated_at'> {}
+interface LeagueCreationAttributes
+  extends Optional<
+    ILeague,
+    | 'id'
+    | 'status'
+    | 'current_pick_turn'
+    | 'format_name'
+    | 'allow_dynamax'
+    | 'allow_z_moves'
+    | 'max_megas'
+    | 'max_z_crystals'
+    | 'max_tera_captains'
+    | 'max_free_agency_moves'
+    | 'require_trade_approval'
+    | 'timeout_action'
+    | 'is_paused'
+    | 'turn_started_at'
+    | 'paused_remaining_seconds'
+    | 'created_at'
+    | 'updated_at'
+  > {}
 
 export class League extends Model<ILeague, LeagueCreationAttributes> implements ILeague {
   declare public id: number;
@@ -14,6 +34,18 @@ export class League extends Model<ILeague, LeagueCreationAttributes> implements 
   declare public time_per_pick_seconds: number;
   declare public status: LeagueStatus;
   declare public current_pick_turn: number;
+  declare public format_name: string;
+  declare public allow_dynamax: boolean;
+  declare public allow_z_moves: boolean;
+  declare public max_megas: number;
+  declare public max_z_crystals: number;
+  declare public max_tera_captains: number;
+  declare public max_free_agency_moves: number;
+  declare public require_trade_approval: boolean;
+  declare public timeout_action: TimeoutAction;
+  declare public is_paused: boolean;
+  declare public turn_started_at: Date | null;
+  declare public paused_remaining_seconds: number | null;
   declare public readonly created_at: Date;
   declare public readonly updated_at: Date;
 }
@@ -50,7 +82,7 @@ League.init(
     },
     time_per_pick_seconds: {
       type: DataTypes.INTEGER,
-      defaultValue: 120,
+      defaultValue: 43200,
       allowNull: false
     },
     status: {
@@ -62,6 +94,64 @@ League.init(
       type: DataTypes.INTEGER,
       defaultValue: 1,
       allowNull: false
+    },
+    format_name: {
+      type: DataTypes.STRING(80),
+      defaultValue: 'NatDex Gen 9',
+      allowNull: false
+    },
+    allow_dynamax: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
+    },
+    allow_z_moves: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
+    },
+    max_megas: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+      allowNull: false
+    },
+    max_z_crystals: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+      allowNull: false
+    },
+    max_tera_captains: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false
+    },
+    max_free_agency_moves: {
+      type: DataTypes.INTEGER,
+      defaultValue: 6,
+      allowNull: false
+    },
+    require_trade_approval: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
+    },
+    timeout_action: {
+      type: DataTypes.ENUM('AUTO_PICK', 'PAUSE'),
+      defaultValue: 'AUTO_PICK',
+      allowNull: false
+    },
+    is_paused: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
+    },
+    turn_started_at: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    paused_remaining_seconds: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   },
   {

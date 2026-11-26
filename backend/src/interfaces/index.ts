@@ -3,6 +3,9 @@ export type DraftMode = 'POINTS' | 'TIERS';
 export type LeagueStatus = 'SETUP' | 'DRAFTING' | 'IN_PROGRESS' | 'FINISHED';
 export type RosterStatus = 'ACTIVE' | 'DROPPED' | 'TRADED';
 export type MatchStatus = 'PENDING' | 'COMPLETED';
+export type TimeoutAction = 'AUTO_PICK' | 'PAUSE';
+export type TransactionType = 'FREE_AGENCY' | 'TRADE';
+export type TradeStatus = 'PENDING' | 'AWAITING_APPROVAL' | 'ACCEPTED' | 'REJECTED' | 'CANCELLED';
 
 export interface IUser {
   id?: number;
@@ -23,6 +26,18 @@ export interface ILeague {
   time_per_pick_seconds: number;
   status: LeagueStatus;
   current_pick_turn?: number;
+  format_name?: string;
+  allow_dynamax?: boolean;
+  allow_z_moves?: boolean;
+  max_megas?: number;
+  max_z_crystals?: number;
+  max_tera_captains?: number;
+  max_free_agency_moves?: number;
+  require_trade_approval?: boolean;
+  timeout_action?: TimeoutAction;
+  is_paused?: boolean;
+  turn_started_at?: Date | null;
+  paused_remaining_seconds?: number | null;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -66,6 +81,7 @@ export interface ILeagueTier {
   pokemon_id: number;
   custom_cost: number;
   custom_tier?: string | null;
+  is_banned?: boolean;
 }
 
 export interface IRosterEntry {
@@ -73,6 +89,8 @@ export interface IRosterEntry {
   coach_id: number;
   pokemon_id: number;
   cost_paid: number;
+  is_mega?: boolean;
+  is_z_user?: boolean;
   is_tera_captain: boolean;
   status: RosterStatus;
   created_at?: Date;
@@ -96,6 +114,7 @@ export interface IMatch {
   id?: number;
   league_id: number;
   week: number;
+  leg?: number;
   home_coach_id: number;
   away_coach_id: number;
   home_score: number;
@@ -107,6 +126,50 @@ export interface IMatch {
   HomeCoach?: ICoach;
   AwayCoach?: ICoach;
   MatchPokemonStats?: IMatchPokemonStat[];
+}
+
+export interface IDraftQueueItem {
+  id?: number;
+  league_id: number;
+  coach_id: number;
+  pokemon_id: number;
+  priority: number;
+  created_at?: Date;
+  updated_at?: Date;
+  Pokemon?: IPokemon;
+}
+
+export interface ITransaction {
+  id?: number;
+  league_id: number;
+  coach_id: number;
+  counterparty_coach_id?: number | null;
+  type: TransactionType;
+  drop_pokemon_id?: number | null;
+  add_pokemon_id?: number | null;
+  trade_id?: number | null;
+  notes?: string | null;
+  created_at?: Date;
+}
+
+export interface ITrade {
+  id?: number;
+  league_id: number;
+  proposer_coach_id: number;
+  receiver_coach_id: number;
+  status: TradeStatus;
+  notes?: string | null;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface ITradeItem {
+  id?: number;
+  trade_id: number;
+  from_coach_id: number;
+  to_coach_id: number;
+  pokemon_id: number;
+  cost_paid: number;
 }
 
 export interface IMatchPokemonStat {

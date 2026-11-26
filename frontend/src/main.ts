@@ -16,6 +16,10 @@ class App {
   private currentView: string = 'lobby';
   private selectedLeagueId: number | null = null;
   private leagues: Array<{ id: number; name: string }> = [];
+  private leaguesLoaded = false;
+  private leaguesPromise: Promise<void> | null = null;
+  private renderToken = 0;
+  private activeViewCleanup: (() => void) | null = null;
 
   constructor() {
     const params = new URLSearchParams(window.location.search);
@@ -44,6 +48,11 @@ class App {
           modalBackdrop.classList.add('hidden');
         }
       });
+
+      const observer = new MutationObserver(() => {
+        document.body.classList.toggle('modal-open', !modalBackdrop.classList.contains('hidden'));
+      });
+      observer.observe(modalBackdrop, { attributes: true, attributeFilter: ['class'] });
     }
 
     document.addEventListener('keydown', (e) => {
@@ -72,49 +81,93 @@ class App {
     }, 3500);
   };
 
-  private async fetchLeaguesList() {
-    try {
-      const list = await api.getLeagues();
-      this.leagues = list.map((l) => ({ id: l.id, name: l.name }));
+  private async fetchLeaguesList(force = false) {
+    if (this.leaguesLoaded && !force) return;
+    if (this.leaguesPromise && !force) return this.leaguesPromise;
 
-      if (!this.selectedLeagueId && this.leagues.length > 0) {
-        this.selectedLeagueId = this.leagues[0].id;
-        localStorage.setItem('pokedraft_selected_league', String(this.selectedLeagueId));
+    let task: Promise<void> | null = null;
+    task = (async () => {
+      try {
+        const list = await api.getLeagues();
+        this.leagues = list.map((l) => ({ id: l.id, name: l.name }));
+        this.leaguesLoaded = true;
+
+        if (!this.selectedLeagueId && this.leagues.length > 0) {
+          this.selectedLeagueId = this.leagues[0].id;
+          localStorage.setItem('pokedraft_selected_league', String(this.selectedLeagueId));
+        }
+      } catch (e) {
+        console.warn('No se pudieron cargar las ligas para la navbar:', e);
+      } finally {
+        if (this.leaguesPromise === task) {
+          this.leaguesPromise = null;
+        }
       }
-    } catch (e) {
-      console.warn('No se pudieron cargar las ligas para la navbar:', e);
-    }
+    })();
+
+    this.leaguesPromise = task;
+    return task;
   }
 
-  public navigate = (view: string) => {
-    if (!VALID_VIEWS.has(view)) return;
-    this.currentView = view;
-    this.render();
-  };
-
-  public selectLeague = (leagueId: number) => {
-    this.selectedLeagueId = leagueId;
-    localStorage.setItem('pokedraft_selected_league', String(leagueId));
-    this.render();
-  };
-
-  public openAuth = () => {
-    renderAuthModal(() => {
-      this.render();
-    }, this.showToast);
-  };
-
-  public async render() {
-    await this.fetchLeaguesList();
-
+  private syncNavbar() {
     renderNavbar(
       this.currentView,
       this.leagues,
       this.selectedLeagueId,
       this.navigate,
-      this.selectLeague,
+      (id) => this.selectLeague(id),
       this.openAuth
     );
+  }
+
+  public navigate = (view: string) => {
+    if (!VALID_VIEWS.has(view) || view === this.currentView) return;
+    this.currentView = view;
+    this.render(false, true);
+  };
+
+  public selectLeague = (leagueId: number, nextView?: string) => {
+    this.selectedLeagueId = leagueId;
+    localStorage.setItem('pokedraft_selected_league', String(leagueId));
+    const needsRefresh = !this.leagues.some((l) => l.id === leagueId);
+    if (nextView && VALID_VIEWS.has(nextView)) {
+      this.currentView = nextView;
+      this.render(needsRefresh, true);
+      return;
+    }
+    this.render(needsRefresh, false);
+  };
+
+  public openAuth = () => {
+    renderAuthModal(() => {
+      this.render(true, false);
+    }, this.showToast);
+  };
+
+  public async render(forceRefreshLeagues = false, resetScroll = false) {
+    const token = ++this.renderToken;
+
+    if (resetScroll) {
+      window.scrollTo(0, 0);
+    }
+
+    if (this.currentView === 'pokedex' && !this.leaguesLoaded) {
+      this.syncNavbar();
+      void this.fetchLeaguesList(forceRefreshLeagues).then(() => {
+        if (token === this.renderToken) {
+          this.syncNavbar();
+        }
+      });
+    } else {
+      await this.fetchLeaguesList(forceRefreshLeagues);
+      if (token !== this.renderToken) return;
+      this.syncNavbar();
+    }
+
+    if (this.activeViewCleanup) {
+      this.activeViewCleanup();
+      this.activeViewCleanup = null;
+    }
 
     const mainContainer = document.getElementById('main-container');
     if (!mainContainer) return;
@@ -123,16 +176,17 @@ class App {
       case 'lobby':
         await renderLobbyView(
           mainContainer,
-          (id) => {
-            this.selectLeague(id);
-            this.navigate('draft');
-          },
+          (id) => this.selectLeague(id, 'draft'),
           this.showToast
         );
         break;
 
       case 'draft':
-        await renderDraftBoardView(mainContainer, this.selectedLeagueId, this.showToast);
+        this.activeViewCleanup = await renderDraftBoardView(
+          mainContainer,
+          this.selectedLeagueId,
+          this.showToast
+        );
         break;
 
       case 'pokedex':
@@ -152,7 +206,11 @@ class App {
         break;
 
       default:
-        await renderLobbyView(mainContainer, this.selectLeague, this.showToast);
+        await renderLobbyView(
+          mainContainer,
+          (id) => this.selectLeague(id, 'draft'),
+          this.showToast
+        );
         break;
     }
   }

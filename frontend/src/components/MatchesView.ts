@@ -22,13 +22,13 @@ export const renderMatchesView = async (
   container.innerHTML = `
     <div class="section-header">
       <div>
-        <h1 class="section-title">${icon('matches')}<span>Calendario de Batallas & Resultados</span></h1>
-        <p class="subtitle">Registra los marcadores semanales y contabiliza bajas individuales por Pokémon</p>
+        <h1 class="section-title">${icon('matches')}<span>Calendario Premier (Bo1 · Ida y Vuelta)</span></h1>
+        <p class="subtitle">Emparejamientos al azar por jornada ida y vuelta con registro de marcador y bajas por Pokémon</p>
       </div>
       <div class="section-actions">
         <button type="button" id="btn-generate-fixture" class="btn btn-primary">
           ${icon('bolt')}
-          <span>Generar Fixture Round-Robin</span>
+          <span>Generar Ida y Vuelta (Azar)</span>
         </button>
       </div>
     </div>
@@ -44,6 +44,7 @@ export const renderMatchesView = async (
   `;
 
   let allMatches: IMatch[] = [];
+  let selectedLeg: 'ALL' | 1 | 2 = 'ALL';
   let selectedWeek: number | 'ALL' = 'ALL';
 
   const openResultModal = async (match: IMatch) => {
@@ -73,9 +74,9 @@ export const renderMatchesView = async (
             </div>
 
             <div style="display: flex; gap: 0.5rem; align-items: center;">
-              <input type="number" id="input-home-score" class="input-well mono-num" style="width: 66px; text-align: center; font-size: 1.15rem; font-weight: 700;" value="${match.home_score || 0}" min="0" max="6" aria-label="Marcador local" />
+              <input type="number" id="input-home-score" class="input-well mono-num" style="width: 66px; text-align: center; font-size: 1.15rem; font-weight: 700;" value="${match.home_score || 0}" min="0" max="6" inputmode="numeric" aria-label="Marcador local" />
               <span style="font-weight: 700; color: var(--ink-muted);">-</span>
-              <input type="number" id="input-away-score" class="input-well mono-num" style="width: 66px; text-align: center; font-size: 1.15rem; font-weight: 700;" value="${match.away_score || 0}" min="0" max="6" aria-label="Marcador visitante" />
+              <input type="number" id="input-away-score" class="input-well mono-num" style="width: 66px; text-align: center; font-size: 1.15rem; font-weight: 700;" value="${match.away_score || 0}" min="0" max="6" inputmode="numeric" aria-label="Marcador visitante" />
             </div>
 
             <div style="flex: 1; min-width: 140px; text-align: right;">
@@ -91,11 +92,11 @@ export const renderMatchesView = async (
                 .map(
                   (r) => `
                   <div class="neo-well match-kill-item">
-                    <div class="mini-socket">${r.Pokemon ? renderPokemonSprite(r.Pokemon, 'mini-sprite') : ''}</div>
+                    <div class="mini-socket">${r.Pokemon ? renderPokemonSprite(r.Pokemon, 'mini-sprite', false, { size: 32 }) : ''}</div>
                     <div style="flex: 1; font-size: 0.82rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                       ${escapeHtml(r.Pokemon?.name || '')}
                     </div>
-                    <input type="number" class="input-well match-kill-input poke-kill-home" data-pokeid="${r.pokemon_id}" value="0" min="0" max="6" aria-label="Kills de ${escapeHtml(r.Pokemon?.name || '')}" />
+                    <input type="number" class="input-well match-kill-input poke-kill-home" data-pokeid="${r.pokemon_id}" value="0" min="0" max="6" inputmode="numeric" aria-label="Kills de ${escapeHtml(r.Pokemon?.name || '')}" />
                   </div>
                 `
                 )
@@ -108,11 +109,11 @@ export const renderMatchesView = async (
                 .map(
                   (r) => `
                   <div class="neo-well match-kill-item">
-                    <div class="mini-socket">${r.Pokemon ? renderPokemonSprite(r.Pokemon, 'mini-sprite') : ''}</div>
+                    <div class="mini-socket">${r.Pokemon ? renderPokemonSprite(r.Pokemon, 'mini-sprite', false, { size: 32 }) : ''}</div>
                     <div style="flex: 1; font-size: 0.82rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                       ${escapeHtml(r.Pokemon?.name || '')}
                     </div>
-                    <input type="number" class="input-well match-kill-input poke-kill-away" data-pokeid="${r.pokemon_id}" value="0" min="0" max="6" aria-label="Kills de ${escapeHtml(r.Pokemon?.name || '')}" />
+                    <input type="number" class="input-well match-kill-input poke-kill-away" data-pokeid="${r.pokemon_id}" value="0" min="0" max="6" inputmode="numeric" aria-label="Kills de ${escapeHtml(r.Pokemon?.name || '')}" />
                   </div>
                 `
                 )
@@ -190,8 +191,11 @@ export const renderMatchesView = async (
       return;
     }
 
+    const filteredByLeg =
+      selectedLeg === 'ALL' ? allMatches : allMatches.filter((m) => (m.leg ?? 1) === selectedLeg);
+
     const matchesByWeek: Record<number, IMatch[]> = {};
-    allMatches.forEach((m) => {
+    filteredByLeg.forEach((m) => {
       if (!matchesByWeek[m.week]) matchesByWeek[m.week] = [];
       matchesByWeek[m.week].push(m);
     });
@@ -200,34 +204,40 @@ export const renderMatchesView = async (
       .map(Number)
       .sort((a, b) => a - b);
 
+    if (selectedWeek !== 'ALL' && !weeks.includes(selectedWeek)) {
+      selectedWeek = 'ALL';
+    }
+
     tabsSlot.innerHTML = `
-      <div class="week-tabs" role="tablist" aria-label="Filtrar por jornada">
-        <button type="button" class="week-tab-btn ${selectedWeek === 'ALL' ? 'active' : ''}" data-week="ALL">Todas (${weeks.length})</button>
-        ${weeks
-          .map(
-            (w) =>
-              `<button type="button" class="week-tab-btn ${selectedWeek === w ? 'active' : ''}" data-week="${w}">J${w}</button>`
-          )
-          .join('')}
+      <div style="display:flex; flex-direction:column; gap:0.55rem; margin-bottom:1.15rem;">
+        <div class="segmented-dock" style="align-self:flex-start;" role="tablist" aria-label="Filtrar por vuelta">
+          <button type="button" class="btn btn-sm ${selectedLeg === 'ALL' ? 'btn-primary' : 'btn-ghost'} leg-tab-btn" data-leg="ALL">Ambas Vueltas</button>
+          <button type="button" class="btn btn-sm ${selectedLeg === 1 ? 'btn-primary' : 'btn-ghost'} leg-tab-btn" data-leg="1">Ida (1ª Vuelta)</button>
+          <button type="button" class="btn btn-sm ${selectedLeg === 2 ? 'btn-primary' : 'btn-ghost'} leg-tab-btn" data-leg="2">Vuelta (2ª Vuelta)</button>
+        </div>
+
+        <div class="week-tabs" style="margin-bottom:0;" role="tablist" aria-label="Filtrar por jornada">
+          <button type="button" class="week-tab-btn ${selectedWeek === 'ALL' ? 'active' : ''}" data-week="ALL">Todas (${weeks.length})</button>
+          ${weeks
+            .map(
+              (w) =>
+                `<button type="button" class="week-tab-btn ${selectedWeek === w ? 'active' : ''}" data-week="${w}">J${w}</button>`
+            )
+            .join('')}
+        </div>
       </div>
     `;
-
-    tabsSlot.querySelectorAll('.week-tab-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const val = btn.getAttribute('data-week');
-        selectedWeek = val === 'ALL' ? 'ALL' : parseInt(val!, 10);
-        renderMatchesContent();
-      });
-    });
 
     const visibleWeeks = selectedWeek === 'ALL' ? weeks : weeks.filter((w) => w === selectedWeek);
 
     listContainer.innerHTML = visibleWeeks
       .map((week) => {
         const weekMatches = matchesByWeek[week] || [];
+        const legNumber = weekMatches[0]?.leg ?? 1;
+        const legLabel = legNumber === 2 ? 'Vuelta' : 'Ida';
         return `
           <section class="week-section">
-            <h2 class="week-heading">${icon('clock')}<span>Jornada ${week}</span></h2>
+            <h2 class="week-heading">${icon('clock')}<span>${legLabel} · Jornada ${week} (Bo1)</span></h2>
             <div class="matches-grid">
               ${weekMatches
                 .map((m) => {
@@ -279,15 +289,33 @@ export const renderMatchesView = async (
         `;
       })
       .join('');
-
-    listContainer.querySelectorAll('.btn-record-result').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const matchId = parseInt(btn.getAttribute('data-id')!, 10);
-        const match = allMatches.find((m) => m.id === matchId);
-        if (match) openResultModal(match);
-      });
-    });
   };
+
+  document.getElementById('matches-week-tabs-slot')?.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const legBtn = target.closest<HTMLButtonElement>('.leg-tab-btn');
+    if (legBtn) {
+      const val = legBtn.getAttribute('data-leg');
+      selectedLeg = val === 'ALL' ? 'ALL' : (parseInt(val!, 10) as 1 | 2);
+      selectedWeek = 'ALL';
+      renderMatchesContent();
+      return;
+    }
+
+    const btn = target.closest<HTMLButtonElement>('.week-tab-btn');
+    if (!btn) return;
+    const val = btn.getAttribute('data-week');
+    selectedWeek = val === 'ALL' ? 'ALL' : parseInt(val!, 10);
+    renderMatchesContent();
+  });
+
+  document.getElementById('matches-list-container')?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.btn-record-result');
+    if (!btn) return;
+    const matchId = parseInt(btn.getAttribute('data-id') || '', 10);
+    const match = allMatches.find((m) => m.id === matchId);
+    if (match) openResultModal(match);
+  });
 
   const loadMatches = async () => {
     try {

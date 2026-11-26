@@ -7,6 +7,7 @@ import draftRoutes from './draft.route.js';
 import rosterRoutes from './roster.route.js';
 import matchRoutes from './match.route.js';
 import leaderboardRoutes from './leaderboard.route.js';
+import tradeRoutes from './trade.route.js';
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use('/draft', draftRoutes);
 router.use('/rosters', rosterRoutes);
 router.use('/matches', matchRoutes);
 router.use('/leaderboard', leaderboardRoutes);
+router.use('/trades', tradeRoutes);
 
 export default router;

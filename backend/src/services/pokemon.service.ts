@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 import { Pokemon, LeagueTier } from '../models/index.js';
 import { IPokemon } from '../interfaces/index.js';
 import { PokeApiService } from './pokeapi.service.js';
+import { isMegaPokemonName } from '../helpers/pokemon-rules.helpers.js';
 
 export interface IPokemonFilters {
   query?: string;
@@ -70,16 +71,19 @@ export class PokemonService {
       order: [['dex_number', 'ASC']]
     });
 
-    // Map custom cost if leagueId is specified
+    // Map custom cost, ban status, and Mega flag
     const mappedRows = rows.map((p: any) => {
       const plain = p.toJSON();
       if (leagueId && plain.LeagueTiers && plain.LeagueTiers.length > 0) {
         plain.cost = plain.LeagueTiers[0].custom_cost;
         plain.tier = plain.LeagueTiers[0].custom_tier;
+        plain.is_banned = Boolean(plain.LeagueTiers[0].is_banned);
       } else {
         plain.cost = plain.default_cost;
         plain.tier = plain.default_tier;
+        plain.is_banned = false;
       }
+      plain.is_mega = isMegaPokemonName(plain.name);
       return plain;
     });
 

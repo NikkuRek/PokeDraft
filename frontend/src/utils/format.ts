@@ -54,7 +54,8 @@ export function renderTypeBadge(type: string, fullWidth = false): string {
 export function renderPokemonSprite(
   pokemon: { dex_number?: number; name?: string; sprite_url?: string; sprite_animated_url?: string | null },
   className = 'pokemon-sprite',
-  preferAnimated = false
+  preferAnimated = false,
+  options?: { eager?: boolean; size?: number }
 ): string {
   const artwork = pokemon.sprite_url || (pokemon.dex_number ? getOfficialArtworkUrl(pokemon.dex_number) : '');
   const animated = pokemon.sprite_animated_url || '';
@@ -63,12 +64,15 @@ export function renderPokemonSprite(
   const alt = escapeHtml(pokemon.name || 'Pokémon');
   const isPixelated = Boolean(preferAnimated && animated);
   const pixelCls = isPixelated ? ' is-pixelated' : '';
+  const size = options?.size ?? (className.includes('mini-sprite') ? 32 : 74);
+  const loadingAttr = options?.eager ? 'eager' : 'lazy';
+  const priorityAttr = options?.eager ? ' fetchpriority="high"' : '';
   const fallbackAttr =
     fallback && fallback !== src
       ? ` onerror="if(this.dataset.fb!=='1'){this.dataset.fb='1';this.classList.remove('is-pixelated');this.src='${escapeHtml(fallback)}';}"`
       : '';
 
-  return `<img src="${escapeHtml(src)}" alt="${alt}" class="${escapeHtml(className)}${pixelCls}"${fallbackAttr} />`;
+  return `<img src="${escapeHtml(src)}" alt="${alt}" width="${size}" height="${size}" loading="${loadingAttr}" decoding="async"${priorityAttr} class="${escapeHtml(className)}${pixelCls}"${fallbackAttr} />`;
 }
 
 export function formatAbilityName(slug: string): string {

@@ -1,10 +1,14 @@
 import { Request, Response } from 'express';
 import { CoachService } from '../services/coach.service.js';
+import { AuthenticatedRequest } from '../middlewares/validate-token.middlewares.js';
 
 export class CoachController {
-  public static async registerCoach(req: Request, res: Response): Promise<void> {
+  public static async registerCoach(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const coach = await CoachService.registerCoach(req.body);
+      const coach = await CoachService.registerCoach({
+        ...req.body,
+        user_id: req.user ? req.user.id : (req.body.user_id || null)
+      });
       res.status(201).json({ ok: true, data: coach });
     } catch (error: any) {
       res.status(error.statusCode || 500).json({ ok: false, msg: error.message });

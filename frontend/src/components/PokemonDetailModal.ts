@@ -100,7 +100,7 @@ export const openPokemonDetailModal = async (options: PokemonDetailModalOptions)
       <div class="dex-modal-hero">
         <div class="dex-photo-stage">
           <div class="poke-slot-well poke-slot-well--lg" id="dex-modal-photo-well">
-            ${renderPokemonSprite(pokemon)}
+            ${renderPokemonSprite(pokemon, 'pokemon-sprite', false, { eager: true, size: 120 })}
           </div>
           <div id="dex-photo-switcher" class="photo-mode-dock segmented-dock hidden" role="group" aria-label="Modo de foto"></div>
         </div>
@@ -149,7 +149,7 @@ export const openPokemonDetailModal = async (options: PokemonDetailModalOptions)
             ? `
           <div style="display: flex; align-items: center; gap: 0.5rem;">
             <label for="dex-sync-cost" class="field-label" style="white-space: nowrap;">Coste (pts):</label>
-            <input type="number" id="dex-sync-cost" class="input-well mono-num" style="width: 72px; padding: 0.42rem 0.55rem;" value="${syncAction.defaultCost ?? 10}" min="1" max="50" />
+            <input type="number" id="dex-sync-cost" class="input-well mono-num" style="width: 72px; padding: 0.42rem 0.55rem;" value="${syncAction.defaultCost ?? 10}" min="1" max="50" inputmode="numeric" />
             <button type="button" id="btn-modal-sync-poke" class="btn btn-primary btn-sm">
               ${icon('download')}
               <span>Sincronizar a Liga</span>
@@ -289,7 +289,7 @@ export const openPokemonDetailModal = async (options: PokemonDetailModalOptions)
           const modeId = btn.getAttribute('data-photo-mode');
           const chosen = modes.find((m) => m.id === modeId);
           if (!chosen) return;
-          photoWell.innerHTML = `<img src="${escapeHtml(chosen.src)}" alt="${escapeHtml(detail.name)}" class="pokemon-sprite ${chosen.pixelated ? 'is-pixelated' : ''}" />`;
+          photoWell.innerHTML = `<img src="${escapeHtml(chosen.src)}" alt="${escapeHtml(detail.name)}" width="120" height="120" decoding="async" class="pokemon-sprite ${chosen.pixelated ? 'is-pixelated' : ''}" />`;
           switcher.querySelectorAll('button').forEach((b) => {
             b.className = b === btn ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
           });

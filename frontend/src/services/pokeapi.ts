@@ -33,8 +33,57 @@ const POKEAPI_FORM_ALIASES: Record<string, string> = {
 };
 
 const pokemonCache = new Map<string, IPokeApiDetail>();
+const pendingPokemonRequests = new Map<string, Promise<IPokeApiDetail | null>>();
 const speciesCache = new Map<string, IPokeApiSpecies>();
 const typeListCache = new Map<string, string[]>();
+const catalogPageCache = new Map<string, { count: number; items: IPokeApiDetail[] }>();
+const typePageCache = new Map<string, { count: number; items: IPokeApiDetail[] }>();
+const pendingSessionWrites = new Map<string, string>();
+let idleFlushScheduled = false;
+
+function scheduleSessionFlush(): void {
+  if (idleFlushScheduled) return;
+  idleFlushScheduled = true;
+  const flush = () => {
+    idleFlushScheduled = false;
+    if (pendingSessionWrites.size === 0) return;
+    try {
+      pendingSessionWrites.forEach((serialized, storageKey) => {
+        sessionStorage.setItem(storageKey, serialized);
+      });
+    } catch {
+      // Ignore storage quota errors
+    } finally {
+      pendingSessionWrites.clear();
+    }
+  };
+  const ric = (window as unknown as { requestIdleCallback?: (cb: () => void) => void }).requestIdleCallback;
+  if (typeof ric === 'function') {
+    ric(flush);
+  } else {
+    window.setTimeout(flush, 0);
+  }
+}
+
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T, index: number) => Promise<R>
+): Promise<R[]> {
+  if (items.length === 0) return [];
+  const results = new Array<R>(items.length);
+  let cursor = 0;
+  const workerCount = Math.min(concurrency, items.length);
+  await Promise.all(
+    Array.from({ length: workerCount }, async () => {
+      while (cursor < items.length) {
+        const idx = cursor++;
+        results[idx] = await mapper(items[idx], idx);
+      }
+    })
+  );
+  return results;
+}
 
 export function normalizePokeApiSlug(nameOrId: string | number): string {
   const raw = String(nameOrId).trim().toLowerCase();
@@ -67,9 +116,10 @@ function readSessionCache<T>(key: string): T | null {
 
 function writeSessionCache(key: string, value: unknown): void {
   try {
-    sessionStorage.setItem(`${STORAGE_PREFIX}${key}`, JSON.stringify(value));
+    pendingSessionWrites.set(`${STORAGE_PREFIX}${key}`, JSON.stringify(value));
+    scheduleSessionFlush();
   } catch {
-    // Ignore storage quota errors
+    // Ignore serialization errors
   }
 }
 
@@ -87,81 +137,91 @@ export async function fetchPokeApiPokemon(nameOrId: string | number): Promise<IP
     return storageHit;
   }
 
-  try {
-    const res = await fetch(`${BASE_URL}/pokemon/${encodeURIComponent(slug)}`);
-    if (!res.ok) return null;
+  const pending = pendingPokemonRequests.get(slug);
+  if (pending) return pending;
 
-    const data: any = await res.json();
-    const statsMap: Record<string, number> = {};
-    let totalBst = 0;
+  const request = (async (): Promise<IPokeApiDetail | null> => {
+    try {
+      const res = await fetch(`${BASE_URL}/pokemon/${encodeURIComponent(slug)}`);
+      if (!res.ok) return null;
 
-    (data.stats || []).forEach((s: any) => {
-      const val = Number(s.base_stat) || 0;
-      statsMap[s.stat?.name] = val;
-      totalBst += val;
-    });
+      const data: any = await res.json();
+      const statsMap: Record<string, number> = {};
+      let totalBst = 0;
 
-    const type1 = data.types?.[0]?.type?.name || 'normal';
-    const type2 = data.types?.[1]?.type?.name || null;
+      (data.stats || []).forEach((s: any) => {
+        const val = Number(s.base_stat) || 0;
+        statsMap[s.stat?.name] = val;
+        totalBst += val;
+      });
 
-    const officialArtwork =
-      data.sprites?.other?.['official-artwork']?.front_default ||
-      data.sprites?.other?.home?.front_default ||
-      data.sprites?.front_default ||
-      getOfficialArtworkUrl(data.id);
+      const type1 = data.types?.[0]?.type?.name || 'normal';
+      const type2 = data.types?.[1]?.type?.name || null;
 
-    const officialShiny =
-      data.sprites?.other?.['official-artwork']?.front_shiny ||
-      data.sprites?.other?.home?.front_shiny ||
-      data.sprites?.front_shiny ||
-      null;
+      const officialArtwork =
+        data.sprites?.other?.['official-artwork']?.front_default ||
+        data.sprites?.other?.home?.front_default ||
+        data.sprites?.front_default ||
+        getOfficialArtworkUrl(data.id);
 
-    const homeSprite = data.sprites?.other?.home?.front_default || null;
+      const officialShiny =
+        data.sprites?.other?.['official-artwork']?.front_shiny ||
+        data.sprites?.other?.home?.front_shiny ||
+        data.sprites?.front_shiny ||
+        null;
 
-    const animatedSprite =
-      data.sprites?.other?.showdown?.front_default ||
-      data.sprites?.versions?.['generation-v']?.['black-white']?.animated?.front_default ||
-      null;
+      const homeSprite = data.sprites?.other?.home?.front_default || null;
 
-    const abilities = (data.abilities || []).map((a: any) => ({
-      name: String(a.ability?.name || ''),
-      is_hidden: Boolean(a.is_hidden)
-    }));
+      const animatedSprite =
+        data.sprites?.other?.showdown?.front_default ||
+        data.sprites?.versions?.['generation-v']?.['black-white']?.animated?.front_default ||
+        null;
 
-    const detail: IPokeApiDetail = {
-      dex_number: Number(data.id),
-      slug: String(data.name),
-      name: formatDisplayName(String(data.name)),
-      type1,
-      type2,
-      base_hp: statsMap['hp'] || 50,
-      base_atk: statsMap['attack'] || 50,
-      base_def: statsMap['defense'] || 50,
-      base_spa: statsMap['special-attack'] || 50,
-      base_spd: statsMap['special-defense'] || 50,
-      base_spe: statsMap['speed'] || 50,
-      base_bst: totalBst,
-      sprite_url: officialArtwork,
-      sprite_shiny_url: officialShiny,
-      sprite_home_url: homeSprite,
-      sprite_animated_url: animatedSprite,
-      height_m: Number(((Number(data.height) || 0) / 10).toFixed(1)),
-      weight_kg: Number(((Number(data.weight) || 0) / 10).toFixed(1)),
-      abilities,
-      cry_url: data.cries?.latest || data.cries?.legacy || null,
-      species_url: data.species?.url || null
-    };
+      const abilities = (data.abilities || []).map((a: any) => ({
+        name: String(a.ability?.name || ''),
+        is_hidden: Boolean(a.is_hidden)
+      }));
 
-    pokemonCache.set(slug, detail);
-    pokemonCache.set(detail.slug, detail);
-    pokemonCache.set(String(detail.dex_number), detail);
-    writeSessionCache(`poke:${slug}`, detail);
+      const detail: IPokeApiDetail = {
+        dex_number: Number(data.id),
+        slug: String(data.name),
+        name: formatDisplayName(String(data.name)),
+        type1,
+        type2,
+        base_hp: statsMap['hp'] || 50,
+        base_atk: statsMap['attack'] || 50,
+        base_def: statsMap['defense'] || 50,
+        base_spa: statsMap['special-attack'] || 50,
+        base_spd: statsMap['special-defense'] || 50,
+        base_spe: statsMap['speed'] || 50,
+        base_bst: totalBst,
+        sprite_url: officialArtwork,
+        sprite_shiny_url: officialShiny,
+        sprite_home_url: homeSprite,
+        sprite_animated_url: animatedSprite,
+        height_m: Number(((Number(data.height) || 0) / 10).toFixed(1)),
+        weight_kg: Number(((Number(data.weight) || 0) / 10).toFixed(1)),
+        abilities,
+        cry_url: data.cries?.latest || data.cries?.legacy || null,
+        species_url: data.species?.url || null
+      };
 
-    return detail;
-  } catch (err) {
-    console.warn(`[PokeAPI] Error consultando "${slug}":`, err);
-    return null;
-  }
+      pokemonCache.set(slug, detail);
+      pokemonCache.set(detail.slug, detail);
+      pokemonCache.set(String(detail.dex_number), detail);
+      writeSessionCache(`poke:${slug}`, detail);
+
+      return detail;
+    } catch (err) {
+      console.warn(`[PokeAPI] Error consultando "${slug}":`, err);
+      return null;
+    } finally {
+      pendingPokemonRequests.delete(slug);
+    }
+  })();
+
+  pendingPokemonRequests.set(slug, request);
+  return request;
 }
 
 export async function fetchPokeApiSpecies(speciesUrlOrId: string | number): Promise<IPokeApiSpecies | null> {
@@ -216,17 +276,23 @@ export async function fetchPokeApiCatalogPage(
   limit = 24,
   offset = 0
 ): Promise<{ count: number; items: IPokeApiDetail[] }> {
+  const cacheKey = `${limit}:${offset}`;
+  const cached = catalogPageCache.get(cacheKey);
+  if (cached) return cached;
+
   const res = await fetch(`${BASE_URL}/pokemon?limit=${limit}&offset=${offset}`);
   if (!res.ok) {
     throw new Error('No se pudo cargar el catálogo desde PokeAPI.');
   }
   const data: any = await res.json();
   const entries: Array<{ name: string }> = data.results || [];
-  const resolved = await Promise.all(entries.map((entry) => fetchPokeApiPokemon(entry.name)));
-  return {
+  const resolved = await mapWithConcurrency(entries, 6, (entry) => fetchPokeApiPokemon(entry.name));
+  const pageResult = {
     count: Number(data.count) || 0,
     items: resolved.filter((item): item is IPokeApiDetail => item !== null)
   };
+  catalogPageCache.set(cacheKey, pageResult);
+  return pageResult;
 }
 
 export async function fetchPokeApiByType(
@@ -235,6 +301,10 @@ export async function fetchPokeApiByType(
   offset = 0
 ): Promise<{ count: number; items: IPokeApiDetail[] }> {
   const slug = type.trim().toLowerCase();
+  const pageKey = `${slug}:${limit}:${offset}`;
+  const cachedPage = typePageCache.get(pageKey);
+  if (cachedPage) return cachedPage;
+
   let names = typeListCache.get(slug);
 
   if (!names) {
@@ -250,11 +320,13 @@ export async function fetchPokeApiByType(
   }
 
   const slice = names!.slice(offset, offset + limit);
-  const resolved = await Promise.all(slice.map((n) => fetchPokeApiPokemon(n)));
-  return {
+  const resolved = await mapWithConcurrency(slice, 6, (n) => fetchPokeApiPokemon(n));
+  const result = {
     count: names!.length,
     items: resolved.filter((item): item is IPokeApiDetail => item !== null)
   };
+  typePageCache.set(pageKey, result);
+  return result;
 }
 
 export async function enrichPokemonListFromPokeApi(
@@ -266,7 +338,7 @@ export async function enrichPokemonListFromPokeApi(
   const result = [...pokemons];
   const needsEnrichment = result
     .map((p, idx) => ({ p, idx }))
-    .filter(({ p }) => !p.sprite_url || !p.sprite_url.includes('pokeapi') || !p.base_bst);
+    .filter(({ p }) => !p.sprite_url || !p.sprite_url.toLowerCase().includes('pokeapi') || !p.base_bst);
 
   if (needsEnrichment.length === 0) return result;
 

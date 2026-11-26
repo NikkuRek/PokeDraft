@@ -5,6 +5,7 @@ import { sequelize, testConnection } from '../config/sequelize.config.js';
 import apiRoutes from '../routes/index.route.js';
 import { swaggerServe, swaggerSetup } from '../config/swagger.config.js';
 import { errorHandler } from '../middlewares/error-handler.middlewares.js';
+import { DraftService } from '../services/draft.service.js';
 
 dotenv.config();
 
@@ -26,7 +27,7 @@ export class Server {
     const isConnected = await testConnection();
     if (isConnected) {
       try {
-        await sequelize.sync();
+        await sequelize.sync({ alter: process.env.DB_SYNC_ALTER !== 'false' });
         console.log('📦 Modelos de Sequelize sincronizados con la base de datos.');
       } catch (err) {
         console.error('⚠️ Error al sincronizar modelos:', err);
@@ -69,5 +70,10 @@ export class Server {
       console.log(`🚀 Servidor PokeDraft corriendo en el puerto ${this.port}`);
       console.log(`📚 Documentación Swagger disponible en: http://localhost:${this.port}/api/docs`);
     });
+
+    // Background sweep for asynchronous draft turn expirations (auto-pick / pause)
+    setInterval(() => {
+      DraftService.checkAllExpiredDrafts().catch(() => {});
+    }, 15000);
   }
 }

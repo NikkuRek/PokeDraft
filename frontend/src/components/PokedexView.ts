@@ -15,7 +15,7 @@ import {
 import { icon } from '../utils/icons.js';
 import { openPokemonDetailModal } from './PokemonDetailModal.js';
 
-const PAGE_SIZE = 24;
+const getPageSize = (): number => (window.matchMedia('(max-width: 639px)').matches ? 16 : 24);
 
 function suggestCompetitiveCost(bst: number): number {
   if (bst >= 600) return 18;
@@ -29,6 +29,8 @@ export const renderPokedexView = async (
   container: HTMLElement,
   showToast: (msg: string, isError?: boolean) => void
 ) => {
+  const pageSize = getPageSize();
+
   container.innerHTML = `
     <div class="section-header">
       <div>
@@ -42,11 +44,15 @@ export const renderPokedexView = async (
         <div class="search-field-wrap">
           <span class="search-icon">${icon('search')}</span>
           <input
-            type="text"
+            type="search"
             id="pokedex-search-input"
             class="input-search"
-            placeholder="Buscar cualquier Pokémon en PokeAPI (ej. garchomp, ogerpon-wellspring, 150)..."
+            placeholder="Buscar cualquier Pokémon en PokeAPI (ej. garchomp, 150)..."
             aria-label="Buscar especie en PokeAPI por nombre o número"
+            enterkeyhint="search"
+            autocapitalize="none"
+            autocomplete="off"
+            spellcheck="false"
           />
         </div>
         <button type="submit" class="btn btn-primary btn-sm">
@@ -95,7 +101,7 @@ export const renderPokedexView = async (
   let totalCount = 0;
   let activeType = '';
   let activeSearch = '';
-  let currentItems: IPokeApiDetail[] = [];
+  let itemsBySlug = new Map<string, IPokeApiDetail>();
 
   const syncToLeagueCatalog = async (nameOrId: string, cost: number) => {
     const synced = await api.syncPokemonFromPokeApi(nameOrId, cost);
@@ -112,7 +118,7 @@ export const renderPokedexView = async (
     const nextBtn = document.getElementById('btn-pokedex-next') as HTMLButtonElement | null;
 
     if (!grid) return;
-    currentItems = items;
+    itemsBySlug = new Map(items.map((item) => [item.slug, item]));
 
     if (items.length === 0) {
       grid.innerHTML = `
@@ -136,7 +142,7 @@ export const renderPokedexView = async (
           : `Mostrando ${items.length} de ${totalCount} entradas oficiales en PokeAPI`;
     }
 
-    const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+    const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
     if (pageIndicator) {
       pageIndicator.textContent = activeSearch ? 'Búsqueda directa' : `Página ${currentPage + 1} / ${totalPages}`;
     }
@@ -153,7 +159,7 @@ export const renderPokedexView = async (
     }
 
     grid.innerHTML = items
-      .map((p) => {
+      .map((p, idx) => {
         const suggestedCost = suggestCompetitiveCost(p.base_bst);
         return `
           <article class="pokemon-card">
@@ -163,7 +169,7 @@ export const renderPokedexView = async (
             </div>
 
             <div class="poke-slot-well">
-              ${renderPokemonSprite(p)}
+              ${renderPokemonSprite(p, 'pokemon-sprite', false, { eager: idx < 6 })}
             </div>
 
             <button type="button" class="pokemon-name-btn btn-pokedex-inspect" data-slug="${escapeHtml(p.slug)}">
@@ -194,35 +200,6 @@ export const renderPokedexView = async (
         `;
       })
       .join('');
-
-    grid.querySelectorAll('.btn-pokedex-inspect').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const slug = btn.getAttribute('data-slug') || '';
-        const item = currentItems.find((x) => x.slug === slug);
-        if (!item) return;
-        openPokemonDetailModal({
-          pokemon: item,
-          mode: 'pokedex',
-          syncAction: {
-            defaultCost: suggestCompetitiveCost(item.base_bst),
-            onSync: syncToLeagueCatalog
-          },
-          showToast
-        });
-      });
-    });
-
-    grid.querySelectorAll('.btn-pokedex-sync').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const slug = btn.getAttribute('data-slug') || '';
-        const cost = parseInt(btn.getAttribute('data-cost') || '10', 10) || 10;
-        try {
-          await syncToLeagueCatalog(slug, cost);
-        } catch (err: any) {
-          showToast(err.message, true);
-        }
-      });
-    });
   };
 
   const loadPokedexPage = async () => {
@@ -245,19 +222,50 @@ export const renderPokedexView = async (
       }
 
       if (activeType) {
-        const res = await fetchPokeApiByType(activeType, PAGE_SIZE, currentPage * PAGE_SIZE);
+        const res = await fetchPokeApiByType(activeType, pageSize, currentPage * pageSize);
         totalCount = res.count;
         renderCards(res.items);
         return;
       }
 
-      const res = await fetchPokeApiCatalogPage(PAGE_SIZE, currentPage * PAGE_SIZE);
+      const res = await fetchPokeApiCatalogPage(pageSize, currentPage * pageSize);
       totalCount = res.count;
       renderCards(res.items);
     } catch (err: any) {
       showToast(err.message || 'Error al consultar PokeAPI.', true);
     }
   };
+
+  document.getElementById('pokedex-grid')?.addEventListener('click', async (e) => {
+    const target = e.target as HTMLElement;
+    const inspectBtn = target.closest<HTMLElement>('.btn-pokedex-inspect');
+    if (inspectBtn) {
+      const slug = inspectBtn.getAttribute('data-slug') || '';
+      const item = itemsBySlug.get(slug);
+      if (!item) return;
+      openPokemonDetailModal({
+        pokemon: item,
+        mode: 'pokedex',
+        syncAction: {
+          defaultCost: suggestCompetitiveCost(item.base_bst),
+          onSync: syncToLeagueCatalog
+        },
+        showToast
+      });
+      return;
+    }
+
+    const syncBtn = target.closest<HTMLButtonElement>('.btn-pokedex-sync');
+    if (syncBtn) {
+      const slug = syncBtn.getAttribute('data-slug') || '';
+      const cost = parseInt(syncBtn.getAttribute('data-cost') || '10', 10) || 10;
+      try {
+        await syncToLeagueCatalog(slug, cost);
+      } catch (err: any) {
+        showToast(err.message, true);
+      }
+    }
+  });
 
   document.getElementById('pokedex-search-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -290,14 +298,16 @@ export const renderPokedexView = async (
   document.getElementById('btn-pokedex-prev')?.addEventListener('click', async () => {
     if (currentPage > 0) {
       currentPage--;
+      window.scrollTo(0, 0);
       await loadPokedexPage();
     }
   });
 
   document.getElementById('btn-pokedex-next')?.addEventListener('click', async () => {
-    const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+    const totalPages = Math.ceil(totalCount / pageSize);
     if (currentPage + 1 < totalPages) {
       currentPage++;
+      window.scrollTo(0, 0);
       await loadPokedexPage();
     }
   });

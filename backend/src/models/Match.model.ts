@@ -2,12 +2,13 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/sequelize.config.js';
 import { IMatch, MatchStatus } from '../interfaces/index.js';
 
-interface MatchCreationAttributes extends Optional<IMatch, 'id' | 'home_score' | 'away_score' | 'replay_url' | 'status' | 'created_at' | 'updated_at'> {}
+interface MatchCreationAttributes extends Optional<IMatch, 'id' | 'leg' | 'home_score' | 'away_score' | 'replay_url' | 'status' | 'created_at' | 'updated_at'> {}
 
 export class Match extends Model<IMatch, MatchCreationAttributes> implements IMatch {
   declare public id: number;
   declare public league_id: number;
   declare public week: number;
+  declare public leg: number;
   declare public home_coach_id: number;
   declare public away_coach_id: number;
   declare public home_score: number;
@@ -31,6 +32,11 @@ Match.init(
     },
     week: {
       type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    leg: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
       allowNull: false
     },
     home_coach_id: {

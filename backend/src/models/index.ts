@@ -7,6 +7,10 @@ import { RosterEntry } from './RosterEntry.model.js';
 import { DraftPick } from './DraftPick.model.js';
 import { Match } from './Match.model.js';
 import { MatchPokemonStat } from './MatchPokemonStat.model.js';
+import { DraftQueueItem } from './DraftQueueItem.model.js';
+import { Transaction } from './Transaction.model.js';
+import { Trade } from './Trade.model.js';
+import { TradeItem } from './TradeItem.model.js';
 
 // User -> League (Admin)
 User.hasMany(League, { foreignKey: 'admin_id', as: 'AdminLeagues' });
@@ -70,6 +74,34 @@ MatchPokemonStat.belongsTo(Coach, { foreignKey: 'coach_id', as: 'Coach' });
 Pokemon.hasMany(MatchPokemonStat, { foreignKey: 'pokemon_id', as: 'MatchStats' });
 MatchPokemonStat.belongsTo(Pokemon, { foreignKey: 'pokemon_id', as: 'Pokemon' });
 
+// DraftQueueItem Associations
+League.hasMany(DraftQueueItem, { foreignKey: 'league_id', as: 'DraftQueues', onDelete: 'CASCADE' });
+DraftQueueItem.belongsTo(League, { foreignKey: 'league_id', as: 'League' });
+Coach.hasMany(DraftQueueItem, { foreignKey: 'coach_id', as: 'DraftQueue', onDelete: 'CASCADE' });
+DraftQueueItem.belongsTo(Coach, { foreignKey: 'coach_id', as: 'Coach' });
+Pokemon.hasMany(DraftQueueItem, { foreignKey: 'pokemon_id', as: 'QueuedEntries' });
+DraftQueueItem.belongsTo(Pokemon, { foreignKey: 'pokemon_id', as: 'Pokemon' });
+
+// Transaction Associations
+League.hasMany(Transaction, { foreignKey: 'league_id', as: 'Transactions', onDelete: 'CASCADE' });
+Transaction.belongsTo(League, { foreignKey: 'league_id', as: 'League' });
+Coach.hasMany(Transaction, { foreignKey: 'coach_id', as: 'Transactions' });
+Transaction.belongsTo(Coach, { foreignKey: 'coach_id', as: 'Coach' });
+Transaction.belongsTo(Coach, { foreignKey: 'counterparty_coach_id', as: 'CounterpartyCoach' });
+Transaction.belongsTo(Pokemon, { foreignKey: 'drop_pokemon_id', as: 'DropPokemon' });
+Transaction.belongsTo(Pokemon, { foreignKey: 'add_pokemon_id', as: 'AddPokemon' });
+
+// Trade & TradeItem Associations
+League.hasMany(Trade, { foreignKey: 'league_id', as: 'Trades', onDelete: 'CASCADE' });
+Trade.belongsTo(League, { foreignKey: 'league_id', as: 'League' });
+Trade.belongsTo(Coach, { foreignKey: 'proposer_coach_id', as: 'ProposerCoach' });
+Trade.belongsTo(Coach, { foreignKey: 'receiver_coach_id', as: 'ReceiverCoach' });
+Trade.hasMany(TradeItem, { foreignKey: 'trade_id', as: 'Items', onDelete: 'CASCADE' });
+TradeItem.belongsTo(Trade, { foreignKey: 'trade_id', as: 'Trade' });
+TradeItem.belongsTo(Pokemon, { foreignKey: 'pokemon_id', as: 'Pokemon' });
+TradeItem.belongsTo(Coach, { foreignKey: 'from_coach_id', as: 'FromCoach' });
+TradeItem.belongsTo(Coach, { foreignKey: 'to_coach_id', as: 'ToCoach' });
+
 export {
   User,
   League,
@@ -79,5 +111,9 @@ export {
   RosterEntry,
   DraftPick,
   Match,
-  MatchPokemonStat
+  MatchPokemonStat,
+  DraftQueueItem,
+  Transaction,
+  Trade,
+  TradeItem
 };

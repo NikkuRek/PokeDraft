@@ -1,4 +1,17 @@
-import { ILeague, ICoach, IPokemon, IDraftState, IMatch, IStanding, IMvpPokemon, IRosterEntry } from '../types/index.js';
+import {
+  ILeague,
+  ICoach,
+  IPokemon,
+  IDraftState,
+  IMatch,
+  IStanding,
+  IMvpPokemon,
+  IRosterEntry,
+  IDraftQueueItem,
+  ILeagueTierItem,
+  ITransaction,
+  ITrade
+} from '../types/index.js';
 
 const API_BASE = '/api';
 
@@ -18,10 +31,29 @@ class ApiService {
     return this.token;
   }
 
+  public getAuthUser(): { id: number; email: string; role: 'ADMIN' | 'COACH' } | null {
+    if (!this.token) return null;
+    try {
+      const parts = this.token.split('.');
+      if (parts.length < 2) return null;
+      const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+      const parsed = JSON.parse(atob(padded));
+      if (!parsed || typeof parsed.id !== 'number') return null;
+      return {
+        id: parsed.id,
+        email: String(parsed.email || ''),
+        role: parsed.role === 'ADMIN' ? 'ADMIN' : 'COACH'
+      };
+    } catch {
+      return null;
+    }
+  }
+
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(options.headers as Record<string, string> || {})
+      ...((options.headers as Record<string, string>) || {})
     };
 
     if (this.token) {
@@ -64,7 +96,7 @@ class ApiService {
     return this.request('/auth/profile');
   }
 
-  // Leagues
+  // Leagues & Rules
   async getLeagues(): Promise<ILeague[]> {
     return this.request('/leagues');
   }
@@ -77,6 +109,35 @@ class ApiService {
     return this.request('/leagues', {
       method: 'POST',
       body: JSON.stringify(data)
+    });
+  }
+
+  async updateLeagueRules(leagueId: number, data: Partial<ILeague>): Promise<ILeague> {
+    return this.request(`/leagues/${leagueId}/rules`, {
+      method: 'PATCH',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async getLeagueTiers(leagueId: number): Promise<ILeagueTierItem[]> {
+    return this.request(`/leagues/${leagueId}/tiers`);
+  }
+
+  async setLeaguePokemonTier(
+    leagueId: number,
+    pokemonId: number,
+    customCost: number,
+    customTier?: string | null,
+    isBanned: boolean = false
+  ): Promise<ILeagueTierItem> {
+    return this.request(`/leagues/${leagueId}/tiers`, {
+      method: 'POST',
+      body: JSON.stringify({
+        pokemon_id: pokemonId,
+        custom_cost: customCost,
+        custom_tier: customTier || null,
+        is_banned: isBanned
+      })
     });
   }
 
@@ -93,7 +154,9 @@ class ApiService {
   }
 
   // Pokemon Catalog
-  async getPokemons(params: { query?: string; type?: string; leagueId?: number; limit?: number; offset?: number } = {}): Promise<IPokemon[]> {
+  async getPokemons(
+    params: { query?: string; type?: string; leagueId?: number; limit?: number; offset?: number } = {}
+  ): Promise<IPokemon[]> {
     const searchParams = new URLSearchParams();
     if (params.query) searchParams.append('query', params.query);
     if (params.type) searchParams.append('type', params.type);
@@ -112,7 +175,11 @@ class ApiService {
     });
   }
 
-  // Draft
+  // Draft + Live SSE + Async Queue + Commissioner Controls
+  createDraftEventSource(leagueId: number): EventSource {
+    return new EventSource(`${API_BASE}/draft/league/${leagueId}/stream`);
+  }
+
   async startDraft(leagueId: number): Promise<ILeague> {
     return this.request(`/draft/league/${leagueId}/start`, { method: 'POST' });
   }
@@ -132,8 +199,58 @@ class ApiService {
     return this.request(`/draft/league/${leagueId}/undo`, { method: 'POST' });
   }
 
-  // Roster
-  async getCoachRoster(coachId: number): Promise<{ coach: ICoach; roster: IRosterEntry[]; coverage: any; showdownExport: string }> {
+  async pauseDraft(leagueId: number): Promise<ILeague> {
+    return this.request(`/draft/league/${leagueId}/pause`, { method: 'POST' });
+  }
+
+  async resumeDraft(leagueId: number): Promise<ILeague> {
+    return this.request(`/draft/league/${leagueId}/resume`, { method: 'POST' });
+  }
+
+  async forceDraftPick(leagueId: number, pokemonId: number) {
+    return this.request(`/draft/league/${leagueId}/force-pick`, {
+      method: 'POST',
+      body: JSON.stringify({ pokemon_id: pokemonId })
+    });
+  }
+
+  async skipDraftTurn(leagueId: number) {
+    return this.request(`/draft/league/${leagueId}/skip-turn`, { method: 'POST' });
+  }
+
+  async getDraftQueue(leagueId: number, coachId: number): Promise<IDraftQueueItem[]> {
+    return this.request(`/draft/league/${leagueId}/queue/${coachId}`);
+  }
+
+  async addToDraftQueue(leagueId: number, coachId: number, pokemonId: number): Promise<IDraftQueueItem[]> {
+    return this.request(`/draft/league/${leagueId}/queue/${coachId}`, {
+      method: 'POST',
+      body: JSON.stringify({ pokemon_id: pokemonId })
+    });
+  }
+
+  async reorderDraftQueue(leagueId: number, coachId: number, pokemonIds: number[]): Promise<IDraftQueueItem[]> {
+    return this.request(`/draft/league/${leagueId}/queue/${coachId}/reorder`, {
+      method: 'PUT',
+      body: JSON.stringify({ pokemon_ids: pokemonIds })
+    });
+  }
+
+  async removeFromDraftQueue(leagueId: number, coachId: number, pokemonId: number): Promise<IDraftQueueItem[]> {
+    return this.request(`/draft/league/${leagueId}/queue/${coachId}/${pokemonId}`, {
+      method: 'DELETE'
+    });
+  }
+
+  // Roster, Designations & Transactions
+  async getCoachRoster(coachId: number): Promise<{
+    coach: ICoach;
+    roster: IRosterEntry[];
+    coverage: any;
+    showdownExport: string;
+    league?: ILeague;
+    free_agency_used?: number;
+  }> {
     return this.request(`/rosters/coach/${coachId}`);
   }
 
@@ -141,6 +258,56 @@ class ApiService {
     return this.request(`/rosters/coach/${coachId}/free-agency`, {
       method: 'POST',
       body: JSON.stringify({ drop_pokemon_id: dropPokemonId, add_pokemon_id: addPokemonId })
+    });
+  }
+
+  async updateRosterDesignations(
+    coachId: number,
+    entryId: number,
+    data: { is_mega?: boolean; is_z_user?: boolean; is_tera_captain?: boolean }
+  ): Promise<IRosterEntry> {
+    return this.request(`/rosters/coach/${coachId}/entry/${entryId}/designations`, {
+      method: 'PATCH',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async getLeagueTransactions(leagueId: number): Promise<ITransaction[]> {
+    return this.request(`/rosters/league/${leagueId}/transactions`);
+  }
+
+  // Trades
+  async getLeagueTrades(leagueId: number): Promise<ITrade[]> {
+    return this.request(`/trades/league/${leagueId}`);
+  }
+
+  async proposeTrade(
+    leagueId: number,
+    data: {
+      proposer_coach_id: number;
+      receiver_coach_id: number;
+      proposer_pokemon_ids: number[];
+      receiver_pokemon_ids: number[];
+      notes?: string;
+    }
+  ): Promise<ITrade> {
+    return this.request(`/trades/league/${leagueId}/propose`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async respondToTrade(tradeId: number, action: 'ACCEPT' | 'REJECT' | 'CANCEL'): Promise<ITrade> {
+    return this.request(`/trades/${tradeId}/respond`, {
+      method: 'POST',
+      body: JSON.stringify({ action })
+    });
+  }
+
+  async reviewTrade(leagueId: number, tradeId: number, approve: boolean): Promise<ITrade> {
+    return this.request(`/trades/league/${leagueId}/${tradeId}/review`, {
+      method: 'POST',
+      body: JSON.stringify({ approve })
     });
   }
 

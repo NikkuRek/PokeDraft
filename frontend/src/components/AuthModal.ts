@@ -69,11 +69,30 @@ export const renderAuthModal = (
       <form id="form-auth" style="display: flex; flex-direction: column; gap: 1rem;">
         <div class="field-group">
           <label class="field-label" for="auth-email">Correo Electrónico</label>
-          <input type="email" id="auth-email" class="input-well" required placeholder="tu@email.com" />
+          <input
+            type="email"
+            id="auth-email"
+            class="input-well"
+            required
+            placeholder="tu@email.com"
+            inputmode="email"
+            autocomplete="email"
+            autocapitalize="none"
+            enterkeyhint="next"
+          />
         </div>
         <div class="field-group">
           <label class="field-label" for="auth-password">Contraseña</label>
-          <input type="password" id="auth-password" class="input-well" required placeholder="Mínimo 6 caracteres" minlength="6" />
+          <input
+            type="password"
+            id="auth-password"
+            class="input-well"
+            required
+            placeholder="Mínimo 6 caracteres"
+            minlength="6"
+            autocomplete="current-password"
+            enterkeyhint="done"
+          />
         </div>
         <div class="modal-actions">
           <button type="button" id="btn-cancel-auth" class="btn btn-secondary">Cancelar</button>
@@ -87,12 +106,14 @@ export const renderAuthModal = (
   const tabLogin = document.getElementById('btn-tab-login')!;
   const tabRegister = document.getElementById('btn-tab-register')!;
   const btnSubmit = document.getElementById('btn-submit-auth')!;
+  const passwordInput = document.getElementById('auth-password') as HTMLInputElement | null;
 
   tabLogin.addEventListener('click', () => {
     mode = 'login';
     tabLogin.className = 'btn btn-primary btn-sm';
     tabRegister.className = 'btn btn-ghost btn-sm';
     btnSubmit.textContent = 'Entrar';
+    if (passwordInput) passwordInput.autocomplete = 'current-password';
   });
 
   tabRegister.addEventListener('click', () => {
@@ -100,6 +121,7 @@ export const renderAuthModal = (
     tabRegister.className = 'btn btn-primary btn-sm';
     tabLogin.className = 'btn btn-ghost btn-sm';
     btnSubmit.textContent = 'Registrarse';
+    if (passwordInput) passwordInput.autocomplete = 'new-password';
   });
 
   document.getElementById('btn-cancel-auth')?.addEventListener('click', closeModal);

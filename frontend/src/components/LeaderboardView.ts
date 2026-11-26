@@ -21,13 +21,13 @@ export const renderLeaderboardView = async (
   container.innerHTML = `
     <div class="section-header">
       <div>
-        <h1 class="section-title">${icon('leaderboard')}<span>Clasificación & Ranking MVP</span></h1>
-        <p class="subtitle">Tabla de posiciones general y los Pokémon más letales de la temporada</p>
+        <h1 class="section-title">${icon('leaderboard')}<span>Tabla Premier League & Ranking MVP</span></h1>
+        <p class="subtitle">Formato Bo1 Ida y Vuelta · Desempate: Puntos → Dif (+/-) → Head-to-Head → Victorias</p>
       </div>
       <div class="segmented-dock" role="tablist" aria-label="Vistas de clasificación">
         <button type="button" id="btn-tab-standings" class="btn btn-primary btn-sm" role="tab" aria-selected="true">
           ${icon('leagues')}
-          <span>Tabla de Posiciones</span>
+          <span>Tabla General</span>
         </button>
         <button type="button" id="btn-tab-mvp" class="btn btn-ghost btn-sm" role="tab" aria-selected="false">
           ${icon('bolt')}
@@ -43,11 +43,10 @@ export const renderLeaderboardView = async (
 
   let activeTab: 'standings' | 'mvp' = 'standings';
 
-  const rankBadgeClass = (index: number, total: number) => {
+  const rankBadgeClass = (index: number) => {
     if (index === 0) return 'rank-pill rank-pill--1';
     if (index === 1) return 'rank-pill rank-pill--2';
     if (index === 2) return 'rank-pill rank-pill--3';
-    if (index === 3 && total > 4) return 'rank-pill rank-pill--playoff';
     return 'rank-pill';
   };
 
@@ -64,13 +63,13 @@ export const renderLeaderboardView = async (
               <table class="table">
                 <thead>
                   <tr>
-                    <th style="width: 72px; text-align: center;">Pos</th>
+                    <th style="width: 60px; text-align: center;">Pos</th>
                     <th>Entrenador / Equipo</th>
-                    <th style="text-align: center;">PJ</th>
+                    <th class="col-hide-mobile" style="text-align: center;">PJ</th>
                     <th style="text-align: center;">V</th>
                     <th style="text-align: center;">D</th>
-                    <th style="text-align: center;">Diferencial (+/-)</th>
-                    <th style="text-align: center; color: var(--dex-gold);">Puntos</th>
+                    <th style="text-align: center;">Dif</th>
+                    <th style="text-align: center; color: var(--dex-gold);">Pts</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -80,15 +79,19 @@ export const renderLeaderboardView = async (
                       : standings
                           .map(
                             (s, index) => `
-                            <tr class="${index === 3 && standings.length > 4 ? 'row-cutline' : ''}">
+                            <tr class="${index === 0 ? 'row-leader' : ''}">
                               <td style="text-align: center;">
-                                <span class="${rankBadgeClass(index, standings.length)}">#${index + 1}</span>
+                                <span class="${rankBadgeClass(index)}">#${index + 1}</span>
                               </td>
                               <td>
-                                <div style="font-weight: 700;">${escapeHtml(s.name)}</div>
+                                <div style="font-weight: 700; display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+                                  <span>${escapeHtml(s.name)}</span>
+                                  ${index === 0 ? '<span class="rule-chip rule-chip--gold">Líder</span>' : ''}
+                                  ${s.tied_on_primary ? `<span class="rule-chip" title="Desempate Head-to-Head">H2H ${s.h2h_points ?? 0}p</span>` : ''}
+                                </div>
                                 <div style="font-size: 0.78rem; color: var(--ink-muted);">${escapeHtml(s.team_name)}</div>
                               </td>
-                              <td class="mono-num" style="text-align: center;">${s.played}</td>
+                              <td class="mono-num col-hide-mobile" style="text-align: center;">${s.played}</td>
                               <td class="mono-num" style="text-align: center; color: #6ee7b7; font-weight: 700;">${s.wins}</td>
                               <td class="mono-num" style="text-align: center; color: #fca5a5; font-weight: 700;">${s.losses}</td>
                               <td class="mono-num" style="text-align: center; font-weight: 700; color: ${
@@ -117,13 +120,13 @@ export const renderLeaderboardView = async (
               <table class="table">
                 <thead>
                   <tr>
-                    <th style="width: 72px; text-align: center;">Rank</th>
+                    <th style="width: 60px; text-align: center;">Rank</th>
                     <th>Pokémon</th>
-                    <th>Tipos</th>
+                    <th class="col-hide-mobile">Tipos</th>
                     <th>Entrenador</th>
                     <th style="text-align: center; color: #ff8e97;">Kills</th>
-                    <th style="text-align: center;">Deaths</th>
-                    <th style="text-align: center; color: var(--dex-gold);">Ratio K/D</th>
+                    <th class="col-hide-mobile" style="text-align: center;">Deaths</th>
+                    <th style="text-align: center; color: var(--dex-gold);">K/D</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -135,15 +138,15 @@ export const renderLeaderboardView = async (
                             (p, index) => `
                             <tr>
                               <td style="text-align: center;">
-                                <span class="${rankBadgeClass(index, mvpList.length)}">#${index + 1}</span>
+                                <span class="${rankBadgeClass(index)}">#${index + 1}</span>
                               </td>
                               <td>
-                                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                  <div class="mini-socket">${renderPokemonSprite(p, 'mini-sprite')}</div>
+                                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                                  <div class="mini-socket">${renderPokemonSprite(p, 'mini-sprite', false, { size: 32 })}</div>
                                   <span style="font-weight: 700;">${escapeHtml(p.name)}</span>
                                 </div>
                               </td>
-                              <td>
+                              <td class="col-hide-mobile">
                                 <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
                                   ${renderTypeBadge(p.type1)}
                                   ${p.type2 ? renderTypeBadge(p.type2) : ''}
@@ -156,7 +159,7 @@ export const renderLeaderboardView = async (
                               <td class="mono-num" style="text-align: center; font-weight: 700; color: #ff8e97; font-size: 1rem;">
                                 ${p.kills}
                               </td>
-                              <td class="mono-num" style="text-align: center; color: var(--ink-secondary);">${p.deaths}</td>
+                              <td class="mono-num col-hide-mobile" style="text-align: center; color: var(--ink-secondary);">${p.deaths}</td>
                               <td class="mono-num" style="text-align: center; font-weight: 700; color: var(--dex-gold);">
                                 ${p.kd_ratio}
                               </td>

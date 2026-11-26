@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { body, param } from 'express-validator';
 import { CoachController } from '../controllers/coach.controller.js';
 import { validateFields } from '../middlewares/validate-fields.middlewares.js';
+import { optionalJWT } from '../middlewares/validate-token.middlewares.js';
 
 const router = Router();
 
@@ -14,6 +15,7 @@ router.get(
 router.post(
   '/',
   [
+    optionalJWT,
     body('league_id', 'league_id es requerido').isInt(),
     body('name', 'El nombre del entrenador es requerido').trim().notEmpty(),
     body('team_name', 'El nombre del equipo es requerido').trim().notEmpty(),

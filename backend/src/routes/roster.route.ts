@@ -6,6 +6,12 @@ import { validateFields } from '../middlewares/validate-fields.middlewares.js';
 const router = Router();
 
 router.get(
+  '/league/:leagueId/transactions',
+  [param('leagueId', 'leagueId inválido').isInt(), validateFields],
+  RosterController.getLeagueTransactions
+);
+
+router.get(
   '/coach/:coachId',
   [param('coachId', 'coachId inválido').isInt(), validateFields],
   RosterController.getCoachRoster
@@ -20,6 +26,16 @@ router.post(
     validateFields
   ],
   RosterController.freeAgencyDropAdd
+);
+
+router.patch(
+  '/coach/:coachId/entry/:entryId/designations',
+  [
+    param('coachId', 'coachId inválido').isInt(),
+    param('entryId', 'entryId inválido').isInt(),
+    validateFields
+  ],
+  RosterController.updateEntryDesignations
 );
 
 export default router;
